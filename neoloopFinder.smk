@@ -11,8 +11,6 @@ import os
 from glob import glob
 configfile: "neoloopFinder.yml"
 
-hicpro_dir="results"
-
 rule all:
 	input:
 		expand("results/{sample}/neoloopfinder/neoTads", sample=config['SAMPLES']),
@@ -28,7 +26,7 @@ rule all_cool:
 
 
 rule hic2cool:
-	input: "%s/{sample}/hic_format/{sample}_%s.hic"%(hicpro_dir,config['REFERENCE'])
+	input: "%s/{sample}/hic_format/{sample}_%s.hic"%(config['HICPRO_INDIR'],config['REFERENCE'])
 	output:
 		"results/{sample}/cool_format/{sample}_%s_%s.cool"%(config['REFERENCE'], config['RESOLUTION'])
 	params:
@@ -214,8 +212,8 @@ rule assemblies2bedpe:
 
 rule merge_PE:
 	input:
-		R1=lambda wildcards: sorted(glob("%s/%s/bowtie_results/*R1*.bam"%(hicpro_dir, wildcards.sample))),
-		R2=lambda wildcards: sorted(glob("%s/%s/bowtie_results/*R2*.bam"%(hicpro_dir, wildcards.sample)))
+		R1=lambda wildcards: sorted(glob("%s/%s/bowtie_results/*R1*.bam"%(config['HICPRO_INDIR'], wildcards.sample))),
+		R2=lambda wildcards: sorted(glob("%s/%s/bowtie_results/*R2*.bam"%(config['HICPRO_INDIR'], wildcards.sample)))
 	output:
 		dynamic("%s/{sample}/{n}.bwt2merged.withSingles.mapq30.bam"%config['SCRATCH'])
 	params:
@@ -247,7 +245,7 @@ rule merge_lanes:
 		sorted="results/{sample}/input/{sample}.bwt2merged.sorted.withSingles.mapq30.bam"
 	params:
 		scratch=config['SCRATCH'],
-		hicprodir=hicpro_dir
+		hicprodir=config['HICPRO_INDIR']
 	threads: 4
 	shell:
 		"""

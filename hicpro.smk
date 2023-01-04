@@ -24,8 +24,8 @@ if n_Lanes:
 	
 rule all:
 	input:
-		directory(expand("results/{name}/{out}", name=config['NAMES'], out=config['OUTS'])),
-		directory(expand("results/{name}/logs", name=config['NAMES']))
+		directory(expand("%s/{name}/{out}"%config['OUT_DIR'], name=config['NAMES'], out=config['OUTS'])),
+		directory(expand("%s/{name}/logs"%config['OUT_DIR'],, name=config['NAMES']))
 	params:
 		scratch=config['SCRATCH']
 	shell:
@@ -247,7 +247,7 @@ rule move_hicresults:
 		stats=directory("%s/results/hic_results/stats/{name}/"%config['SCRATCH']),
 		data=directory("%s/results/hic_results/data/{name}/"%config['SCRATCH']),
 	output:
-		directory("results/{name}/hic_results")
+		directory("%s/{name}/hic_results"%config['OUT_DIR'],)
 	params:
 		scratch=config['SCRATCH']
 	shell:
@@ -264,7 +264,7 @@ rule move_logs:
 	input:
 		logs=directory("%s/results/logs/{name}/"%config['SCRATCH'])
 	output:
-		directory("results/{name}/logs")
+		directory("%s/{name}/logs"%config['OUT_DIR'],)
 	shell:
 		"""
 		mkdir -p {output}
@@ -276,7 +276,7 @@ rule move_icematrix:
 		raw=directory("%s/results/hic_results/matrix/{name}/iced"%config['SCRATCH']),
 		iced=directory("%s/results/hic_results/matrix/{name}/raw"%config['SCRATCH'])
 	output:
-		directory("results/{name}/hic_results/matrix")
+		directory("%s/{name}/hic_results/matrix"%config['OUT_DIR'],)
 	shell:
 		"""
 		mkdir -p {output}
@@ -288,7 +288,7 @@ rule move_bams:
 	input:
 		directory("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'])
 	output:
-		directory("results/{name}/bowtie_results")
+		directory("%s/{name}/bowtie_results"%config['OUT_DIR'],)
 	shell:
 		"""
 		mkdir -p {output}
@@ -297,9 +297,9 @@ rule move_bams:
 
 rule pool:
 	input:
-		expand(directory("results/{name}/hic_results"), name=config['NAMES'])
+		expand(directory("%s/{name}/hic_results"%config['OUT_DIR'],), name=config['NAMES'])
 	output:
-		"results/%s/cool_format/%s.5000.cool"%(config['POOL'], config['POOL'])
+		"%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'],config['POOL'], config['POOL'])
 	params:
 		dir=config['HICPRO_INSTALL_DIR'],
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME']),
@@ -322,9 +322,9 @@ rule pool:
 		
 rule cool2mcool:
 	input:
-		"results/%s/cool_format/%s.5000.cool"%(config['POOL'], config['POOL'])
+		"%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'],config['POOL'], config['POOL'])
 	output:
-		"results/%s/cool_format/%s.mcool"%(config['POOL'], config['POOL'])
+		"%s/%s/cool_format/%s.mcool"%(config['OUT_DIR'], config['POOL'], config['POOL'])
 	params:
 		resolutions="5000,10000,25000,50000,100000,500000,10000000,2500000"
 	conda: "envs/Cooler.yml"
@@ -336,9 +336,9 @@ rule cool2mcool:
 
 rule cool2hic:
 	input:
-		cool="results/%s/cool_format/%s.5000.cool"%(config['POOL'], config['POOL'])
+		cool="%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'], config['POOL'], config['POOL'])
 	output:
-		"results/%s/hic_format/%s.hic"%(config['POOL'], config['POOL'])		
+		"%s/%s/hic_format/%s.hic"%(config['OUT_DIR'],config['POOL'], config['POOL'])		
 	params:
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME']),
 		fraq="data/%s_resfraq_%s.bed"%(config['ENZYME'],config['REFERENCE_NAME'])
@@ -363,15 +363,15 @@ rule cool2hic:
 
 rule all_create_hic_from_validpairs:
 	input:
-		directory(expand("results/{name}/hic_format", name=config['NAMES']))
+		directory(expand("%s/{name}/hic_format"%config['OUT_DIR'],, name=config['NAMES']))
 
 rule create_hic_from_validpairs:
 	input:
-		dir=directory("results/{name}/hic_results"),
+		dir=directory("%s/{name}/hic_results"%config['OUT_DIR'],),
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
 	output:
 		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
-		save=directory("results/{name}/hic_format")
+		save=directory("%s/{name}/hic_format"%config['OUT_DIR'],)
 	params:
 		ref=config['REFERENCE_NAME'],
 		tools=config['JUICER_PATH'],
@@ -393,11 +393,11 @@ rule create_hic_from_validpairs:
 
 rule create_hic_noChr:
 	input:
-		dir=directory("results/{name}/hic_results"),
+		dir=directory("%s/{name}/hic_results"%config['OUT_DIR'],),
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
 	output:
 		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
-		save="results/{name}/hic_format/{name}_%s.noChr.hic"%config['REFERENCE_NAME']
+		save="%s/{name}/hic_format/{name}_%s.noChr.hic"%(config['OUT_DIR'],config['REFERENCE_NAME'])
 	params:
 		ref=config['REFERENCE_NAME'],
 		tools=config['JUICER_PATH'],

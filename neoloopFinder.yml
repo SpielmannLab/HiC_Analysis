@@ -10,4 +10,4 @@ RESOLUTION: 10000
 SCRATCH: "work"
 JUICER_PATH: "/data/$USER/software/juicer_tools_1.22.01.jar"
 MIN_CONFIDENCE: "8"
-
+HICPRO_INDIR: "results/hicpro/"

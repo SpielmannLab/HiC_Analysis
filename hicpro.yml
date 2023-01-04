@@ -16,10 +16,11 @@ POOL: "pooled-test-samples"
 LANES: 1
 REFERENCE_NAME: "hg19"
 
-
 RESOLUTION: "10000" # highest resolution
 JUICER_PATH: "/data/$USER/software/juicer_tools_1.22.01.jar"
 SCRATCH: "work"
+
+OUT_DIR: "results/hicpro"
 ### OUTS can be one or multiple of "bowtie_results", "hic_results" or "hic_format" 
 OUTS:
     - "matrix"

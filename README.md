@@ -41,5 +41,11 @@ snakemake -s neoloopFinder.smk all --cores $n --use-conda --config SCRATCH=$SCRA
 snakemake -s neoloopFinder.smk plot --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
 
+# HiChIP
+FitHiChIP requires aligned validPairs files (from hicpro "hic_results" ).
 
+```bash
+### run fithichip
+snakemake -s HiChIP.smk all --cores $n --use-conda --config SCRATCH=$SCRATCH  
+```
 
