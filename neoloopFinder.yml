@@ -1,0 +1,13 @@
+RESFRAQ: "data/DpnII_resfraq_hg19.bed"
+REFERENCE: "hg19"
+REFERENCE_FILE: "/data/$USER/reference/organisms/human/hg19/hg19.fa"
+#REFERENCE_FILE: "/data/$USER/reference/organisms/mouse/mm10/GRCm38.p6.genome.fa"
+HIC_BREAKFINDER_IMG: "../imgs/hic_breakfinder.img" # singularity image
+SAMPLES:
+  - "test_sample"
+ENZYME: "DpnII"
+RESOLUTION: 10000
+SCRATCH: "work"
+JUICER_PATH: "/data/$USER/software/juicer_tools_1.22.01.jar"
+MIN_CONFIDENCE: "8"
+

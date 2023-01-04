@@ -1,0 +1,13 @@
+name: peakachu
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - cooler
+  - numba
+  - scikit-learn=1.1.2
+  - joblib=1.1.0
+  - pip:
+    - hic-straw==0.0.6 
+    - peakachu

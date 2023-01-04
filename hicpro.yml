@@ -1,0 +1,42 @@
+### use full paths
+### 
+HICPRO_INSTALL_DIR: "/data/$USER/tools/HiC-Pro-master"
+REF_IDX_DIR:  "/data/$USER/projects/HiC/pipeline/Preprocessing/data/index" # bowtie2 index
+SCRATCH: "/data/$USER/projects/HiC/pipeline/Processing/work"
+SAMPLES_PATH: "/data/$USER/projects/HiC/pipeline/Processing/data/test_dataset/"
+
+SAMPLES:
+    - "test"
+    
+NAMES:
+    - "test_sample"
+
+POOL: "pooled-test-samples"
+ 
+LANES: 1
+REFERENCE_NAME: "hg19"
+
+
+RESOLUTION: "10000" # highest resolution
+JUICER_PATH: "/data/$USER/software/juicer_tools_1.22.01.jar"
+SCRATCH: "work"
+### OUTS can be one or multiple of "bowtie_results", "hic_results" or "hic_format" 
+OUTS:
+    - "matrix"
+    - "bowtie_results"
+    - "hic_results"
+    - "hic_format"
+
+REFERENCE_FILE: "/data/$USER/reference/organisms/human/hg19/hg19.fa"
+
+ENZYME: "DpnII"
+RES_MOTIF: "^GATC"
+LIGATION_SITE: "GATCGATC"
+
+#ENZYME: "BglII"
+#RES_MOTIF: "A^GATCTC"
+#LIGATION_SITE: "AGATCGATCT"
+
+#ENZYME: "HindIII"
+#RES_MOTIF: "A^AGCTT"
+#LIGATION_SITE: "AAGCTAGCTT"

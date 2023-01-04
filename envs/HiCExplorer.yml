@@ -1,0 +1,8 @@
+name: HiCExplorer
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - hicexplorer=3.6 
+  - python=3.8
