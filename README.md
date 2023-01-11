@@ -28,7 +28,7 @@ snakemake -s hicpro.smk pool --cores $n --use-conda --config SCRATCH=$SCRATCH
 ```
 
 # SV Analysis
-For Structural Variant Calling we use HiC-Breakfinder and for Analysis NeoloopFinder. HiC-Breakfinder is currently limited to using hg19 resources. 
+For Structural Variant Calling we use HiC-Breakfinder and for Analysis NeoloopFinder.  
 For HiC-Breakfinder please download associated files:
 https://salkinstitute.box.com/s/m8oyv2ypf8o3kcdsybzcmrpg032xnrgx
 
