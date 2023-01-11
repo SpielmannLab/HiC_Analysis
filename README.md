@@ -1,7 +1,11 @@
 # Pipeline running HiC-Pro on SLURM
 
 This pipeline uses Snakemake v6. 
+Download example files
 
+```bash
+wget https://data.cyverse.org/dav-anon/iplant/home/kschultz/example.zip
+```
 
 # Alignment
 For Alignment the pipeline starts HiC-Pro in parallel mode on a SLURM cluster.
@@ -25,6 +29,8 @@ snakemake -s hicpro.smk pool --cores $n --use-conda --config SCRATCH=$SCRATCH
 
 # SV Analysis
 For Structural Variant Calling we use HiC-Breakfinder and for Analysis NeoloopFinder. HiC-Breakfinder is currently limited to using hg19 resources. 
+For HiC-Breakfinder please download associated files:
+https://salkinstitute.box.com/s/m8oyv2ypf8o3kcdsybzcmrpg032xnrgx
 
 ```bash
 ### convert hic to cool format

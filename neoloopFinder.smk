@@ -265,7 +265,7 @@ rule hic_breakfinder:
 		"""
 		mkdir -p results/{wildcards.sample}/hic_breakfinder/
 		singularity exec {params.breakfinder} hic_breakfinder --bam-file {input} \
-			--exp-file-inter resources/inter_expect_1Mb.hg19.txt \
-			--exp-file-intra resources/intra_expect_100kb.hg19.txt \
+			--exp-file-inter inter_expect_1Mb.hg19.txt \
+			--exp-file-intra intra_expect_100kb.hg19.txt \
 			--name results/{wildcards.sample}/hic_breakfinder/{wildcards.sample}
 		"""
