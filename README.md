@@ -1,6 +1,6 @@
 # Pipeline running HiC-Pro on SLURM
 
-This pipeline uses Snakemake v6. 
+This pipeline uses Snakemake v6.  
 Download example files
 
 ```bash
@@ -46,6 +46,21 @@ snakemake -s neoloopFinder.smk all --cores $n --use-conda --config SCRATCH=$SCRA
 ### Plot breakpoints with
 snakemake -s neoloopFinder.smk plot --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
+
+# A/B Compartments
+Compartment Analysis with FANC
+```bash
+### for every sample create chromosome overview figures
+snakemake -s Compartment_Analysis.smk genome_overview --cores $n --use-conda --config SCRATCH=$SCRATCH  
+
+### create a plot for the region around target genes
+snakemake -s Compartment_Analysis.smk target_genes --cores $n --use-conda --config SCRATCH=$SCRATCH
+
+### compare compartment shifts to a control group
+snakemake -s Compartment_Analysis.smk compareToCtrls --cores $n --use-conda --config SCRATCH=$SCRATCH
+
+```
+
 
 # HiChIP
 FitHiChIP requires aligned validPairs files (from hicpro "hic_results" ).
