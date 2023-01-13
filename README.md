@@ -47,8 +47,20 @@ snakemake -s neoloopFinder.smk all --cores $n --use-conda --config SCRATCH=$SCRA
 snakemake -s neoloopFinder.smk plot --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
 
+# FANC loops and insulation 
+```bash
+### detect loops and create plot of target gene regions
+snakemake -s fanc.smk all_loops --cores $n --use-conda --config SCRATCH=$SCRATCH 
+### insulation score for target gene regions
+snakemake -s fanc.smk insulation_plots --cores $n --use-conda --config SCRATCH=$SCRATCH 
+### aggregate analysis 
+snakemake -s fanc.smk plot_APA --cores $n --use-conda --config SCRATCH=$SCRATCH 
+snakemake -s fanc.smk matrix_APA --cores $n --use-conda --config SCRATCH=$SCRATCH 
+```
+
+
 # A/B Compartments
-Compartment Analysis with FANC
+Compartment Analysis with FANC (works with fanc.yml)
 ```bash
 ### for every sample create chromosome overview figures
 snakemake -s Compartment_Analysis.smk genome_overview --cores $n --use-conda --config SCRATCH=$SCRATCH  
@@ -58,15 +70,12 @@ snakemake -s Compartment_Analysis.smk target_genes --cores $n --use-conda --conf
 
 ### compare compartment shifts to a control group
 snakemake -s Compartment_Analysis.smk compareToCtrls --cores $n --use-conda --config SCRATCH=$SCRATCH
-
 ```
 
 # CHESS HiC Analysis
 ```bash
 snakemake -s CHESS.smk all --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
-
-
 
 
 # HiChIP
