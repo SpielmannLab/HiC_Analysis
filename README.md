@@ -61,6 +61,13 @@ snakemake -s Compartment_Analysis.smk compareToCtrls --cores $n --use-conda --co
 
 ```
 
+# CHESS HiC Analysis
+```bash
+snakemake -s CHESS.smk all --cores $n --use-conda --config SCRATCH=$SCRATCH  
+```
+
+
+
 
 # HiChIP
 FitHiChIP requires aligned validPairs files (from hicpro "hic_results" ).

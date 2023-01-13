@@ -1,0 +1,16 @@
+name: chess-hic
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python>3.7.10
+  - pip:
+    - attrs
+    - chess-hic
+    - fanc
+    - iniconfig
+    - pluggy
+    - py
+    - pytest
+    - toml
