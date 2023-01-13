@@ -58,7 +58,6 @@ snakemake -s fanc.smk plot_APA --cores $n --use-conda --config SCRATCH=$SCRATCH
 snakemake -s fanc.smk matrix_APA --cores $n --use-conda --config SCRATCH=$SCRATCH 
 ```
 
-
 # A/B Compartments
 Compartment Analysis with FANC (works with fanc.yml)
 ```bash
@@ -70,6 +69,15 @@ snakemake -s Compartment_Analysis.smk target_genes --cores $n --use-conda --conf
 
 ### compare compartment shifts to a control group
 snakemake -s Compartment_Analysis.smk compareToCtrls --cores $n --use-conda --config SCRATCH=$SCRATCH
+```
+
+## Loop Calling 
+# Peakachu
+```bash
+### peakachu version 1
+snakemake -s peakachu.smk peakachu_v1 --cores $n --use-conda --config SCRATCH=$SCRATCH
+### peakachu version 2
+snakemake -s peakachu.smk peakachu_v2 --cores $n --use-conda --config SCRATCH=$SCRATCH    
 ```
 
 # CHESS HiC Analysis
