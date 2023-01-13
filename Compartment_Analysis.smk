@@ -1,7 +1,7 @@
 import os 
 from glob import glob
 
-configfile: "Compartment_Analysis.yml"
+configfile: "fanc.yml"
 
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 
@@ -191,7 +191,6 @@ rule fanc_compartments_genome:
 		"""
 
 ### target gene region
-### 125 bins both ways from gene start
 rule target_regions:
 	output:
 		region="%s/cohort/target_regions_r%s.txt"%(config['SCRATCH'],config['RANGE'])
