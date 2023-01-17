@@ -1,0 +1,34 @@
+OUTDIR: "results"
+REFERENCE: "hg19"
+REFERENCE_FILE: "/data/$USER/reference/organisms/human/hg19/hg19.fa"
+HICPRO_INDIR: "results/hicpro"
+PREFIX: "chr" # either "" or "chr" depending on the .hic file 
+
+SAMPLES_exp1: # control experiment
+    - "test_sample"
+SAMPLES_ctrl:
+    - "ctrl_1"
+    - "ctrl_2"
+
+TARGET_GENES:
+   - "CDH6"
+   - "DST"
+   - "MTUS2"
+   - "SLC35G2"
+   - "ZDBF2"
+   - "PDGFRA"
+
+RANGE: 125 # range for window size when plotting target genes
+### gene list in format 
+# chrom startpos   endpos  genename
+GENELIST: "example/genes_hg19.bedpe"
+### target resolution 
+RESOLUTION: 10000
+SCRATCH: "work"
+
+JUICER: "/data/$USER/software/juicer_tools_1.22.01.jar"
+
+MIN_CONFIDENCE: ".8" ### min confidence for peakachu scores
+
+LDNet_MODEL: "HiC-LDNet/model/baseline_CE/human_hic_k562_10_best.pth"
+

@@ -71,14 +71,26 @@ snakemake -s Compartment_Analysis.smk target_genes --cores $n --use-conda --conf
 snakemake -s Compartment_Analysis.smk compareToCtrls --cores $n --use-conda --config SCRATCH=$SCRATCH
 ```
 
-## Loop Calling 
-# Peakachu
+# Loop Calling 
+## Peakachu
 ```bash
 ### peakachu version 1
 snakemake -s peakachu.smk peakachu_v1 --cores $n --use-conda --config SCRATCH=$SCRATCH
 ### peakachu version 2
 snakemake -s peakachu.smk peakachu_v2 --cores $n --use-conda --config SCRATCH=$SCRATCH    
 ```
+
+# Other Loop Caller
+Rules hiccups and HiC LDNet start new batch jobs with gcpu request.
+The rule itself only creates the output directory, not the files. Please wait for the jobs to finish.
+```bash
+### run hiccups and HiC_LDNet first and wait for the job to finish
+snakemake -s loopcalling.smk hiccups_all --cores $n --use-conda --config SCRATCH=$SCRATCH
+snakemake -s loopcalling.smk HiC_LDNet_all --cores $n --use-conda --config SCRATCH=$SCRATCH  
+###
+snakemake -s loopcalling.smk arrowhead_all --cores $n --use-conda --config SCRATCH=$SCRATCH    
+```
+
 
 # CHESS HiC Analysis
 ```bash
