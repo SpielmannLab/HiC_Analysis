@@ -5,6 +5,7 @@ Download example files
 
 ```bash
 wget https://data.cyverse.org/dav-anon/iplant/home/kschultz/example.zip
+
 ```
 
 # Alignment
