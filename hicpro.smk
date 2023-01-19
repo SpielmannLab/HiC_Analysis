@@ -9,7 +9,7 @@
 
 import os
 import glob
-configfile: "HiC-Pro.yml"
+configfile: "hicpro.yml"
 
 from random import random
 run_nr=int(random()*1000000000)
@@ -19,22 +19,22 @@ lanes=list()
 if n_Lanes:
 	lst=list(range(1,n_Lanes+1))
 	for i in lst:
-		lanes.append('L00'+str(i)) 
+		lanes.append('L00'+str(i))
 
-	
+
 rule all:
 	input:
 		directory(expand("%s/{name}/{out}"%config['OUT_DIR'], name=config['NAMES'], out=config['OUTS'])),
-		directory(expand("%s/{name}/logs"%config['OUT_DIR'],, name=config['NAMES']))
+		directory(expand("%s/{name}/logs"%config['OUT_DIR'], name=config['NAMES']))
 	params:
 		scratch=config['SCRATCH']
 	shell:
 		"""
 		rm -r {params.scratch}/*
 		"""
-		
+
 ### Hicpro configfile will be generated for each run according to input in HiC-Pro.yml
-### 
+###
 rule configuration:
 	input:
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME']),
@@ -49,7 +49,7 @@ rule configuration:
 	shell:
 		"""
 		cp {params.dir}/config-hicpro.txt {output}
-		
+
 		sed -i "s@REFERENCE_GENOME =.*@REFERENCE_GENOME = {params.ref}@g" {output}
 		sed -i "s@GENOME_SIZE =.*@GENOME_SIZE = {input.sizes}@g" {output}
 		sed -i "s@GENOME_FRAGMENT =.*@GENOME_FRAGMENT = {input.fraq}@g" {output}
@@ -59,7 +59,7 @@ rule configuration:
 		sed -i "s@PAIR1_EXT =.*@PAIR1_EXT = _R1@g" {output}
 		sed -i "s@PAIR2_EXT =.*@PAIR2_EXT = _R2@g" {output}
 		"""
-		
+
 ### You may change and add parameters like this
 #
 # 		sed -i "s/N_CPU =.*/N_CPU = 4/g" {output}
@@ -83,10 +83,10 @@ rule link_ref:
 		if [ ! -e {output.fa} ] ; then
 			cp {params.path} {output.fa}
 		fi
-		
-		samtools faidx -o {output.idx} {output.fa} 
+
+		samtools faidx -o {output.idx} {output.fa}
 		"""
-		
+
 rule ref_fragments:
 	input:
 		"data/ref/%s.fa"%(config['REFERENCE_NAME'])
@@ -120,16 +120,16 @@ rule link_files:
 		R2="%s/rawData/{sample}-{lane}_R2.fastq.gz"%config['SCRATCH']
 	params:
 		scratch=config['SCRATCH']
-	shell: 
+	shell:
 		"""
-		for f in {input.R1} ; do 
+		for f in {input.R1} ; do
 			ln -s $f {params.scratch}/rawData/{wildcards.sample}-{wildcards.lane}_R1.fastq.gz
 		done
 		for f in {input.R2} ; do
 			ln -s $f {params.scratch}/rawData/{wildcards.sample}-{wildcards.lane}_R2.fastq.gz
 		done
 		"""
-		
+
 rule all_rename_R1:
 	input:
 		expand("%s/samples/{name}/{name}-{lane}_R1.fq.gz"%config['SCRATCH'], name=config['NAMES'], lane=lanes)
@@ -148,19 +148,19 @@ rule rename_R1:
 		file_array=({params.samples})
 		filepath_array=({input})
 		name_array=({params.name})
-		
+
 		count=${{#file_array[@]}}
 		for i in `seq 1 $count` ; do
 			echo "RENAME "${{filepath_array[$i-1]}}" to "{params.scratch}/samples/${{name_array[$i-1]}}/${{name_array[$i-1]}}-{wildcards.lane}_R1.fq.gz
 			mv ${{filepath_array[$i-1]}} {params.scratch}/samples/${{name_array[$i-1]}}/${{name_array[$i-1]}}-{wildcards.lane}_R1.fq.gz
 		done
-	
+
 		"""
 
 rule all_rename_R2:
 	input:
 		expand("%s/samples/{name}/{name}-{lane}_R2.fq.gz"%config['SCRATCH'], name=config['NAMES'], lane=lanes)
-		
+
 rule rename_R2:
 	input:
 		expand("%s/rawData/{sample}-{{lane}}_R2.fastq.gz"%config['SCRATCH'], sample=config['SAMPLES'])
@@ -175,14 +175,14 @@ rule rename_R2:
 		file_array=({params.samples})
 		filepath_array=({input})
 		name_array=({params.name})
-		
+
 		count=${{#file_array[@]}}
 		for i in `seq 1 $count` ; do
 			echo "RENAME "${{filepath_array[$i-1]}}" to "{params.scratch}/samples/${{name_array[$i-1]}}/${{name_array[$i-1]}}-{wildcards.lane}_R2.fq.gz
 			mv ${{filepath_array[$i-1]}} {params.scratch}/samples/${{name_array[$i-1]}}/${{name_array[$i-1]}}-{wildcards.lane}_R2.fq.gz
-		done	
+		done
 		"""
-		
+
 rule all_split_sample:
 	input:
 		directory(expand("%s/splits/{name}/"%config['SCRATCH'], name=config['NAMES']))
@@ -198,13 +198,13 @@ rule split_sample:
 	shell:
 		"""
 		for f in {input}
-		do 	
-			python {params.dir}/bin/utils/split_reads.py --results_folder {output} $f 
+		do
+			python {params.dir}/bin/utils/split_reads.py --results_folder {output} $f
 		done
 		"""
 
 rule hicpro_parallel_step1:
-	input: 
+	input:
 		directory(expand("%s/splits/{name}/"%config['SCRATCH'], name=config['NAMES'])),
 		conf="%s/%s-config.yml"%(config['SCRATCH'],run_nr)
 	output:
@@ -218,28 +218,30 @@ rule hicpro_parallel_step1:
 	threads: 1
 	shell:
 		"""
-		set +o pipefail	
+		set +o pipefail
 		PATH={params.dir}/bin:$PATH
-		yes | HiC-Pro -i {params.scratch}/splits -o {params.scratch}/results -c {input.conf} -p 
+		yes | HiC-Pro -i {params.scratch}/splits -o {params.scratch}/results -c {input.conf} -p
 		sed -i "s@^@../splits/@" {params.scratch}/results/inputfiles_$USER.txt
 		cd {params.scratch}/results
-		srun HiCPro_step1_$USER.sh 	
-		"""			
-		
+		srun HiCPro_step1_$USER.sh
+		"""
+
 rule hicpro_parallel_step2:
-	input: 
+	input:
 		directory(expand("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'], name=config["NAMES"])),
 	output:
 		plots=directory(expand("%s/results/hic_results/pic/{name}/"%config['SCRATCH'], name=config["NAMES"])),
 		stats=directory(expand("%s/results/hic_results/stats/{name}/"%config['SCRATCH'], name=config["NAMES"])),
+		raw=directory(expand("%s/results/hic_results/matrix/{name}/iced"%config['SCRATCH'], name=config["NAMES"])),
+		iced=directory(expand("%s/results/hic_results/matrix/{name}/raw"%config['SCRATCH'], name=config["NAMES"]))
 	params:
 		scratch=config['SCRATCH']
 	shell:
 		"""
 		set +o pipefail
 		cd {params.scratch}/results
-		srun HiCPro_step2_$USER.sh 
-		"""	
+		srun HiCPro_step2_$USER.sh
+		"""
 
 rule move_hicresults:
 	input:
@@ -276,14 +278,14 @@ rule move_icematrix:
 		raw=directory("%s/results/hic_results/matrix/{name}/iced"%config['SCRATCH']),
 		iced=directory("%s/results/hic_results/matrix/{name}/raw"%config['SCRATCH'])
 	output:
-		directory("%s/{name}/hic_results/matrix"%config['OUT_DIR'],)
+		directory("%s/{name}/matrix"%config['OUT_DIR'])
 	shell:
 		"""
 		mkdir -p {output}
 		mv -v {input.raw} {output}/
 		mv -v {input.iced} {output}/
 		"""
-	
+
 rule move_bams:
 	input:
 		directory("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'])
@@ -308,18 +310,18 @@ rule pool:
 	shell:
 		"""
 		cool_files=""
-		for path in {input} ; do 
-			vp=$path/data/*.allValidPairs 	
+		for path in {input} ; do
+			vp=$path/data/*.allValidPairs
 			name=$(basename $vp .allValidPairs)
 			mkdir -p {params.scratch}/$name/
 			bash {params.dir}/hicpro2higlass.sh -i $vp -r 5000 -c {params.sizes} -n -o {params.scratch}/$name/
 			cool_files=$cool_files" "$(ls {params.scratch}/$name/*.cool)
-		done 
-		
+		done
+
 		echo "Merge "$cool_files" to "{output}"."
 		cooler merge {output} $cool_files
-		""""
-		
+		"""
+
 rule cool2mcool:
 	input:
 		"%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'],config['POOL'], config['POOL'])
@@ -332,21 +334,20 @@ rule cool2mcool:
 	shell:
 		"""
 		cooler zoomify -o {output} -n {threads} -r {params.resolutions} ${out}-both_wt.$res.cool {input}
-		""""	
+		"""
 
 rule cool2hic:
 	input:
 		cool="%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'], config['POOL'], config['POOL'])
 	output:
-		"%s/%s/hic_format/%s.hic"%(config['OUT_DIR'],config['POOL'], config['POOL'])		
+		"%s/%s/hic_format/%s.hic"%(config['OUT_DIR'],config['POOL'], config['POOL'])
 	params:
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME']),
-		fraq="data/%s_resfraq_%s.bed"%(config['ENZYME'],config['REFERENCE_NAME'])
+		fraq="data/%s_resfraq_%s.bed"%(config['ENZYME'],config['REFERENCE_NAME']),
 		scratch="%s"%config['SCRATCH'],
 		resolutions="5000,10000,25000,50000,100000,500000,10000000,2500000",
 		name=config['POOL']
 	conda: "envs/HiCExplorer.yml"
-	resources: 80x1000mb
 	threads: 4
 	shell:
 		"""
@@ -363,11 +364,11 @@ rule cool2hic:
 
 rule all_create_hic_from_validpairs:
 	input:
-		directory(expand("%s/{name}/hic_format"%config['OUT_DIR'],, name=config['NAMES']))
+		directory(expand("%s/{name}/hic_format"%config['OUT_DIR'], name=config['NAMES']))
 
 rule create_hic_from_validpairs:
 	input:
-		dir=directory("%s/{name}/hic_results"%config['OUT_DIR'],),
+		dir=directory("%s/{name}/hic_results"%config['OUT_DIR']),
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
 	output:
 		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
@@ -384,12 +385,12 @@ rule create_hic_from_validpairs:
 		mkdir -p {output.save}
 		mkdir -p {output.tmp}
 		mkdir -p {params.scratch}/tmp/
-		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {input.dir}/data/{wildcards.name}.allValidPairs -g {input.sizes} -j {params.tools} 
+		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {input.dir}/data/{wildcards.name}.allValidPairs -g {input.sizes} -j {params.tools}
 		wait
 		mv {output.tmp}/{wildcards.name}.allValidPairs.hic {output.tmp}/{wildcards.name}_{params.ref}.hic
 		java -jar {params.tools} addNorm -j {threads} -w {params.res} {output.tmp}/{wildcards.name}_{params.ref}.hic
-		cp -r {output.tmp}/{wildcards.name}_{params.ref}.hic {output.save}	
-		"""	
+		cp -r {output.tmp}/{wildcards.name}_{params.ref}.hic {output.save}
+		"""
 
 rule create_hic_noChr:
 	input:
@@ -405,16 +406,14 @@ rule create_hic_noChr:
 		res=config['RESOLUTION'],
 		dir="%s/scripts/"%config['HICPRO_INSTALL_DIR']
 	shell:
-		"""		
+		"""
 		mkdir -p {output.tmp}
 		sed -r "s|chr||g" {input.dir}/data/{wildcards.name}.allValidPairs > {output.tmp}/{wildcards.name}.fixed.allValidPairs
 		sed -r "s|chr||g" {input.sizes} > {output.tmp}/noChr.sizes
-		
-		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {output.tmp}/{wildcards.name}.fixed.allValidPairs -g {output.tmp}/noChr.sizes -j {params.tools} 
+
+		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {output.tmp}/{wildcards.name}.fixed.allValidPairs -g {output.tmp}/noChr.sizes -j {params.tools}
 		wait
 		mv {output.tmp}/{wildcards.name}.fixed.allValidPairs.hic {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic
 		java -jar {params.tools} addNorm -j $(nproc) -w {params.res} {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic
 		cp -r {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic {output.save}
 		"""
-			
-
