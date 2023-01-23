@@ -26,3 +26,5 @@ MIN_CONFIDENCE: ".8" ### min confidence for peakachu scores
 ### example peakachu v2
 PEAKACHU_MODEL: "peakachu-models/high-confidence.30million.10kb.w6.pkl"
 
+### gene list for peakachu diff loop annotation
+GENELIST: "example/genes_hg19.bedpe"
