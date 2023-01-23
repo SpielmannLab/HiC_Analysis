@@ -21,7 +21,7 @@ if n_Lanes:
 	for i in lst:
 		lanes.append('L00'+str(i))
 
-### if rename not true ruse sample names as names
+### if rename not true use sample names as names
 if config['RENAME'] != "TRUE" :
 	config['NAMES'] = config['SAMPLES']
 	
@@ -232,7 +232,7 @@ rule hicpro_parallel_step1:
 	params:
 		scratch=config['SCRATCH'],
 		dir=config['HICPRO_INSTALL_DIR']
-	threads: 1
+	threads: 2
 	shell:
 		"""
 		set +o pipefail
@@ -240,7 +240,7 @@ rule hicpro_parallel_step1:
 		yes | HiC-Pro -i {params.scratch}/splits -o {params.scratch}/results -c {input.conf} -p
 		sed -i "s@^@../splits/@" {params.scratch}/results/inputfiles_$USER.txt
 		cd {params.scratch}/results
-		srun HiCPro_step1_$USER.sh
+		srun HiCPro_step1_*.sh
 		"""
 
 ### run the 2nd step HiCPro_step2_$USER.sh
@@ -254,11 +254,12 @@ rule hicpro_parallel_step2:
 		iced=directory(expand("%s/results/hic_results/matrix/{name}/raw"%config['SCRATCH'], name=config["NAMES"]))
 	params:
 		scratch=config['SCRATCH']
+	threads: 1
 	shell:
 		"""
 		set +o pipefail
 		cd {params.scratch}/results
-		srun HiCPro_step2_$USER.sh
+		srun HiCPro_step2_*.sh
 		"""
 
 ### HiC-pro results are stored in "batches" (each HiC-Pro run creates hic_results with all samples)
@@ -334,6 +335,7 @@ rule move_icematrix:
 
 ### pools ALL SAMPLES into one
 ### remove samples that should not be merged from configfile hicpro.yml
+### highest resolution is hárd coded to 5000 so bin 25000 is possible
 rule pool:
 	input:
 		expand(directory("%s/{name}/hic_results"%config['OUT_DIR'],), name=config['NAMES'])
@@ -359,6 +361,8 @@ rule pool:
 		cooler merge {output} $cool_files
 		"""
 
+### create a multi cooler files from one high resolution cooler file
+### allowed resolutions must be product from input resolution
 rule cool2mcool:
 	input:
 		"%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'],config['POOL'], config['POOL'])
@@ -370,9 +374,13 @@ rule cool2mcool:
 	threads: 4
 	shell:
 		"""
-		cooler zoomify -o {output} -n {threads} -r {params.resolutions} ${out}-both_wt.$res.cool {input}
+		cooler zoomify -o {output} -n {threads} -r {params.resolutions} {input}
 		"""
 
+### converting cool to hic is not really supported by anyone so this is only a workaround
+### depending on the input this can take a lot of ressources so java options are set high
+### make sure snakemake job has access to sufficient ressources
+### job might still fail due to lack off ressources allocated
 rule cool2hic:
 	input:
 		cool="%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'], config['POOL'], config['POOL'])
@@ -383,7 +391,8 @@ rule cool2hic:
 		fraq="data/%s_resfraq_%s.bed"%(config['ENZYME'],config['REFERENCE_NAME']),
 		scratch="%s"%config['SCRATCH'],
 		resolutions="5000,10000,25000,50000,100000,500000,10000000,2500000",
-		name=config['POOL']
+		name=config['POOL'],
+		juicer=config['JUICER_PATH']
 	conda: "envs/HiCExplorer.yml"
 	threads: 4
 	shell:
@@ -394,11 +403,13 @@ rule cool2hic:
 		sed -r "s|chr||g" {params.scratch}/{params.name}.ginteractions.tsv.short.sorted
 		TMP={params.scratch}/tmp
 		mkdir -p $TMP
-		export _JAVA_OPTIONS="-Xmx79g -Xms40g"
-		java -Xmx79g -Xms40g -jar $juicer pre -r {params.resolution} -j {threads} -t $TMP  -f {params.fraq} {params.scratch}/{params.name}.ginteractions.tsv.short.sorted {output} {params.sizes}
+		export _JAVA_OPTIONS="-Xmx49g -Xms40g"
+		java -Xmx49g -Xms40g -jar {params.juicer} pre -r {params.resolution} -j {threads} -t $TMP  -f {params.fraq} {params.scratch}/{params.name}.ginteractions.tsv.short.sorted {output} {params.sizes}
 		"""
 
 
+### hicpro validpairs can get converted to many formats and are itself required by some tools 
+### we convert to hic format for easy visualization in JuiceBox
 rule all_create_hic_from_validpairs:
 	input:
 		directory(expand("%s/{name}/hic_format"%config['OUT_DIR'], name=config['NAMES']))
@@ -429,6 +440,9 @@ rule create_hic_from_validpairs:
 		cp -r {output.tmp}/{wildcards.name}_{params.ref}.hic {output.save}
 		"""
 
+### new hic files get the chr chromsome prefix if it is in their reference
+### in older files the chr got removed
+### for comparison to older files one might want to create new hic files without chr prefix
 rule create_hic_noChr:
 	input:
 		dir=directory("%s/{name}/hic_results"%config['OUT_DIR'],),
