@@ -28,6 +28,11 @@ snakemake -s hicpro.smk all --cores $n --use-conda --config SCRATCH=$SCRATCH
 snakemake -s hicpro.smk pool --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
 
+```bash
+### quality control with hicrep creates QC folder with stratum adjusted correlation coefficient scores
+snakemake -s hicpro.smk pool hicrep --cores $n --use-conda --config SCRATCH=$SCRATCH  
+```
+
 # SV Analysis
 For Structural Variant Calling we use HiC-Breakfinder and for Analysis NeoloopFinder.  
 For HiC-Breakfinder please download associated files:

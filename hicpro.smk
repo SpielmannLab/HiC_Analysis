@@ -24,7 +24,10 @@ if n_Lanes:
 ### if rename not true use sample names as names
 if config['RENAME'] != "TRUE" :
 	config['NAMES'] = config['SAMPLES']
-	
+
+if config['PREFIX'] != "chr" :
+	ruleorder: create_hic_noChr > create_hic_from_validpairs
+
 rule all:
 	input:
 		directory(expand("%s/{name}/{out}"%config['OUT_DIR'], name=config['NAMES'], out=config['OUTS'])),
@@ -349,7 +352,7 @@ rule move_logs:
 #     - "hic_format" <<<<<
 rule all_create_hic_from_validpairs:
 	input:
-		directory(expand("%s/{name}/hic_format"%config['OUT_DIR'], name=config['NAMES']))
+		expand("%s/{sample}/hic_format/{sample}_%s.hic"%(config['OUT_DIR'],config['REFERENCE_NAME']), sample=config['NAMES'])
 
 rule create_hic_from_validpairs:
 	input:
@@ -357,7 +360,7 @@ rule create_hic_from_validpairs:
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
 	output:
 		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
-		save=directory("%s/{name}/hic_format"%config['OUT_DIR'],)
+		save="%s/{name}/hic_format/{name}_%s.hic"%(config['OUT_DIR'],config['REFERENCE_NAME'])
 	params:
 		ref=config['REFERENCE_NAME'],
 		tools=config['JUICER_PATH'],
@@ -367,7 +370,6 @@ rule create_hic_from_validpairs:
 	threads: 6
 	shell:
 		"""
-		mkdir -p {output.save}
 		mkdir -p {output.tmp}
 		mkdir -p {params.scratch}/tmp/
 		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {input.dir}/data/{wildcards.name}.allValidPairs -g {input.sizes} -j {params.tools}
@@ -386,7 +388,7 @@ rule create_hic_noChr:
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
 	output:
 		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
-		save="%s/{name}/hic_format/{name}_%s.noChr.hic"%(config['OUT_DIR'],config['REFERENCE_NAME'])
+		save="%s/{name}/hic_format/{name}_%s.hic"%(config['OUT_DIR'],config['REFERENCE_NAME'])
 	params:
 		ref=config['REFERENCE_NAME'],
 		tools=config['JUICER_PATH'],
@@ -480,5 +482,58 @@ rule cool2hic:
 		java -Xmx49g -Xms40g -jar {params.juicer} pre -r {params.resolution} -j {threads} -t $TMP  -f {params.fraq} {params.scratch}/{params.name}.ginteractions.tsv.short.sorted {output} {params.sizes}
 		"""
 
+### convert hic directly to mcool
+### this is used for SCC quality control 
+rule hic2cool:
+	input:
+		"%s/{name}/hic_format/{name}_%s.hic"%(config['OUT_DIR'],  config['REFERENCE_NAME'])
+	output:
+		"%s/{name}/cooler/{name}_%s.mcool"%(config['OUT_DIR'], config['REFERENCE_NAME'])
+	params: 
+		scratch=config['SCRATCH']
+	conda: "envs/hic2cool.yml"
+	threads: 2
+	resources:
+		mem_mb=13*1000
+	shell:
+		"""
+		export HDF5_USE_FILE_LOCKING=FALSE
+		export _JAVA_OPTIONS="-Xmx12g -Xms5g"	
+		mkdir -p {params.scratch}/{wildcards.sample}/
+		cp {input} {params.scratch}/{wildcards.sample}/
+		hic2cool convert -p {threads} -r 0 {params.scratch}/{wildcards.sample}/$(basename {input}) {params.scratch}/{wildcards.sample}/tmp 
+		cp -rf {params.scratch}/{wildcards.sample}/tmp.mcool {output}
+		rm -rf {params.scratch}/{wildcards.sample}/tmp.mcool 
+		"""	
 
+
+### quality control with hicrep 
+rule hicrep:
+	input:
+		expand("%s/{name}/cooler/{name}_%s.mcool"%(config['OUT_DIR'], config['REFERENCE_NAME']), name=config['NAMES'])
+	output:
+		"%s/QC/SCC.txt"%(config['OUT_DIR'])
+	params:
+		pre=config['PREFIX'],
+		scratch=config['SCRATCH']
+	conda: "envs/hicrep.yml"
+	shell:
+		"""
+		mkdir -p {params.scratch}/hicrep/
+		IFS=' ' read -r -a files <<< "{input}"
+		i_string=""
+		for i in "${{files[@]}}" ; do
+			file1=$i
+			for j in "${{files[@]}}" ; do
+				file2=$j
+				if [[ $file1 != $file2  && ! $i_string =~ $file2 ]] ; then
+					job=$RANDOM
+					hicrep $file1 $file2 {params.scratch}/hicrep/$job.txt --binSize 100000 --h 1 --dBPMax 500000 --chrNames {params.pre}{{1..22}}
+				fi 
+			done
+			i_string=$i_string$file1
+		done 
+		cat $(ls {params.scratch}/hicrep/*) > {output}
+		rm -r {params.scratch}/hicrep/
+		"""
 
