@@ -2,7 +2,8 @@ RESFRAQ: "data/DpnII_resfraq_hg19.bed"
 REFERENCE: "hg19"
 REFERENCE_FILE: "/data/$USER/reference/organisms/human/hg19/hg19.fa"
 #REFERENCE_FILE: "/data/$USER/reference/organisms/mouse/mm10/GRCm38.p6.genome.fa"
-HIC_BREAKFINDER_IMG: "../imgs/hic_breakfinder.img" # singularity image
+HIC_BREAKFINDER_IMG: "../imgs/hic_breakfinder.img" # singularity image from https://hub.docker.com/r/kjdurbin/hic_breakfinder
+# singularity build ../imgs/hic_breakfinder.img docker://kjdurbin/hic_breakfinder
 SAMPLES:
   - "test_sample"
 ENZYME: "DpnII"

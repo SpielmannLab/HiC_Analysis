@@ -1,6 +1,7 @@
 HICPRO_INDIR: "results/hicpro"
+IMAGE: "../imgs/fithichip.img"  #  singularity image from https://hub.docker.com/r/aylab/fithichip
+# singularity build ../imgs/fithichip.img docker://aylab/fithichip
 ### samples will be pooled
-IMAGE: "../imgs/fithichip.img"
 SAMPLES: 
     - "A01"
     - "A02"
@@ -13,8 +14,8 @@ MACS2_CONFIG: "--nomodel --extsize 147 -q 0.05 "  ### H3K27ac
 #MACS2_CONFIG: "--nomodel --extsize 147 -p 0.01 "  ### CTCF 
 READ_LENGTH: 150
 ### fithichip parameter
-#Interaction type - 1: peak to peak 2: peak to non peak 3: peak to all (default) 4: all to all 5: everything from 1 to 4.
-MODE: 4
+#Interaction type - 1: peak to peak 2: peak to non peak 3: peak to all (default) 4: all to all 
+MODE: 4 # for interaction type everything from 1 to 4.
 BINSIZE: 5000
 LOW_TH: 10000
 UP_TH: 2500000

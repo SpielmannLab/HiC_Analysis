@@ -21,7 +21,10 @@ if n_Lanes:
 	for i in lst:
 		lanes.append('L00'+str(i))
 
-
+### if rename not true ruse sample names as names
+if config['RENAME'] != "TRUE" :
+	config['NAMES'] = config['SAMPLES']
+	
 rule all:
 	input:
 		directory(expand("%s/{name}/{out}"%config['OUT_DIR'], name=config['NAMES'], out=config['OUTS'])),
@@ -71,6 +74,8 @@ rule configuration:
 ###
 
 
+### link reference to local 
+### and create index
 rule link_ref:
 	params:
 		path=config['REFERENCE_FILE'],
@@ -86,10 +91,12 @@ rule link_ref:
 
 		samtools faidx -o {output.idx} {output.fa}
 		"""
-
+### create fragment file (reference fragmented by config enzyme)
+### hicpro uses this file to check for valid pairs
+### index .fai must be in same directory as reference
 rule ref_fragments:
 	input:
-		"data/ref/%s.fa"%(config['REFERENCE_NAME'])
+		config['REFERENCE_FILE'],
 	output:
 		"data/%s_resfraq_%s.bed"%(config['ENZYME'],config['REFERENCE_NAME'])
 	params:
@@ -101,6 +108,7 @@ rule ref_fragments:
 		python {params.dir}/bin/utils/digest_genome.py -r {params.motif} -o {output} {input}
 		"""
 
+### create file that lists the size of each chromosome
 rule ref_sizes:
 	input:
 		"data/ref/%s.fa.fai"%(config['REFERENCE_NAME'])
@@ -110,7 +118,8 @@ rule ref_sizes:
 		"""
 		cut -f1-2 {input} > {output}
 		"""
-
+### create soft link to fastq file
+### the link follows the pipeline nomenclature, while the fastq may contain additional strings
 rule link_files:
 	input:
 		R1=lambda wildcards: glob.glob("%s/%s*%s_R1*.f*q.gz"%(config['SAMPLES_PATH'], wildcards.sample, wildcards.lane)),
@@ -130,6 +139,7 @@ rule link_files:
 		done
 		"""
 
+### rename the softlinks 
 rule all_rename_R1:
 	input:
 		expand("%s/samples/{name}/{name}-{lane}_R1.fq.gz"%config['SCRATCH'], name=config['NAMES'], lane=lanes)
@@ -183,6 +193,7 @@ rule rename_R2:
 		done
 		"""
 
+### use hic-pro script to split fastq files into smaller fastq files (used for parallelization) 
 rule all_split_sample:
 	input:
 		directory(expand("%s/splits/{name}/"%config['SCRATCH'], name=config['NAMES']))
@@ -203,6 +214,12 @@ rule split_sample:
 		done
 		"""
 
+### run HiC-Pro in parallel mode (-p flag)
+### this creates inputfiles_$USER.txt, which lists all input files
+### using sed command to change inputfiles_$USER.txt because the paths are always messed up
+### this may be fixed in later HiC-Pro versions 
+### HiC-Pro also generates two scripts: HiCPro_step1_$USER.sh and HiCPro_step2_$USER.sh
+### starting HiCPro_step1_$USER.sh in this rule
 rule hicpro_parallel_step1:
 	input:
 		directory(expand("%s/splits/{name}/"%config['SCRATCH'], name=config['NAMES'])),
@@ -226,6 +243,7 @@ rule hicpro_parallel_step1:
 		srun HiCPro_step1_$USER.sh
 		"""
 
+### run the 2nd step HiCPro_step2_$USER.sh
 rule hicpro_parallel_step2:
 	input:
 		directory(expand("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'], name=config["NAMES"])),
@@ -243,6 +261,13 @@ rule hicpro_parallel_step2:
 		srun HiCPro_step2_$USER.sh
 		"""
 
+### HiC-pro results are stored in "batches" (each HiC-Pro run creates hic_results with all samples)
+### moving files to sample based folder structure
+# OUTS:
+#     - "matrix"
+#     - "bowtie_results"
+#     - "hic_results" <<<<<
+#     - "hic_format"
 rule move_hicresults:
 	input:
 		plots=directory("%s/results/hic_results/pic/{name}/"%config['SCRATCH']),
@@ -273,6 +298,27 @@ rule move_logs:
 		mv -v {input}* {output}
 		"""
 
+# OUTS:
+#     - "matrix"
+#     - "bowtie_results" <<<<<
+#     - "hic_results"
+#     - "hic_format"
+rule move_bams:
+	input:
+		directory("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'])
+	output:
+		directory("%s/{name}/bowtie_results"%config['OUT_DIR'],)
+	shell:
+		"""
+		mkdir -p {output}
+		mv -v {input}* {output}/
+		"""
+		
+# OUTS:
+#     - "matrix" <<<<<
+#     - "bowtie_results"
+#     - "hic_results"
+#     - "hic_format"
 rule move_icematrix:
 	input:
 		raw=directory("%s/results/hic_results/matrix/{name}/iced"%config['SCRATCH']),
@@ -286,17 +332,8 @@ rule move_icematrix:
 		mv -v {input.iced} {output}/
 		"""
 
-rule move_bams:
-	input:
-		directory("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'])
-	output:
-		directory("%s/{name}/bowtie_results"%config['OUT_DIR'],)
-	shell:
-		"""
-		mkdir -p {output}
-		mv -v {input}* {output}/
-		"""
-
+### pools ALL SAMPLES into one
+### remove samples that should not be merged from configfile hicpro.yml
 rule pool:
 	input:
 		expand(directory("%s/{name}/hic_results"%config['OUT_DIR'],), name=config['NAMES'])

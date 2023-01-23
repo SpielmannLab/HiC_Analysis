@@ -5,9 +5,11 @@ REF_IDX_DIR:  "/data/$USER/projects/HiC/pipeline/Preprocessing/data/index" # bow
 SCRATCH: "/data/$USER/projects/HiC/pipeline/Processing/work"
 SAMPLES_PATH: "/data/$USER/projects/HiC/pipeline/Processing/data/test_dataset/"
 
+### 
 SAMPLES:
     - "test"
     
+RENAME: "TRUE"
 NAMES:
     - "test_sample"
 

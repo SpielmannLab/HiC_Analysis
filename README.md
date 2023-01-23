@@ -97,7 +97,7 @@ snakemake -s peakachu.smk peakachuDiff_eachCtrl --cores $n --use-conda --config 
 Rules hiccups and HiC LDNet start new batch jobs with gcpu request.
 The rule itself only creates the output directory, not the files. Please wait for the jobs to finish.
 ```bash
-### run hiccups and HiC_LDNet first and wait for the job to finish
+### run hiccups and HiC_LDNet and wait for the job to finish
 snakemake -s loopcalling.smk hiccups_all --cores $n --use-conda --config SCRATCH=$SCRATCH
 snakemake -s loopcalling.smk HiC_LDNet_all --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ###
