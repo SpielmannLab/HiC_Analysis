@@ -261,9 +261,50 @@ rule hicpro_parallel_step2:
 		cd {params.scratch}/results
 		srun HiCPro_step2_*.sh
 		"""
-
+#################
 ### HiC-pro results are stored in "batches" (each HiC-Pro run creates hic_results with all samples)
 ### moving files to sample based folder structure
+#################
+	
+### matrix files (with ice norm) are hicpro recommended output files 
+# OUTS:
+#     - "matrix" <<<<<
+#     - "bowtie_results"
+#     - "hic_results"
+#     - "hic_format"
+rule move_icematrix:
+	input:
+		raw=directory("%s/results/hic_results/matrix/{name}/iced"%config['SCRATCH']),
+		iced=directory("%s/results/hic_results/matrix/{name}/raw"%config['SCRATCH'])
+	output:
+		directory("%s/{name}/matrix"%config['OUT_DIR'])
+	shell:
+		"""
+		mkdir -p {output}
+		mv -v {input.raw} {output}/
+		mv -v {input.iced} {output}/
+		"""
+
+
+### the bowtie aligned bam files
+# OUTS:
+#     - "matrix"
+#     - "bowtie_results" <<<<<
+#     - "hic_results"
+#     - "hic_format"
+rule move_bams:
+	input:
+		directory("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'])
+	output:
+		directory("%s/{name}/bowtie_results"%config['OUT_DIR'],)
+	shell:
+		"""
+		mkdir -p {output}
+		mv -v {input}* {output}/
+		"""
+
+### statistic metrics and plots in directories stats and pic
+### also the very useful validpairs are in data 
 # OUTS:
 #     - "matrix"
 #     - "bowtie_results"
@@ -299,38 +340,70 @@ rule move_logs:
 		mv -v {input}* {output}
 		"""
 
+### hicpro validpairs can get converted to many formats and are itself required by some tools 
+### we convert to hic format for easy visualization in JuiceBox
 # OUTS:
-#     - "matrix"
-#     - "bowtie_results" <<<<<
-#     - "hic_results"
-#     - "hic_format"
-rule move_bams:
-	input:
-		directory("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'])
-	output:
-		directory("%s/{name}/bowtie_results"%config['OUT_DIR'],)
-	shell:
-		"""
-		mkdir -p {output}
-		mv -v {input}* {output}/
-		"""
-		
-# OUTS:
-#     - "matrix" <<<<<
+#     - "matrix" 
 #     - "bowtie_results"
 #     - "hic_results"
-#     - "hic_format"
-rule move_icematrix:
+#     - "hic_format" <<<<<
+rule all_create_hic_from_validpairs:
 	input:
-		raw=directory("%s/results/hic_results/matrix/{name}/iced"%config['SCRATCH']),
-		iced=directory("%s/results/hic_results/matrix/{name}/raw"%config['SCRATCH'])
+		directory(expand("%s/{name}/hic_format"%config['OUT_DIR'], name=config['NAMES']))
+
+rule create_hic_from_validpairs:
+	input:
+		dir=directory("%s/{name}/hic_results"%config['OUT_DIR']),
+		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
 	output:
-		directory("%s/{name}/matrix"%config['OUT_DIR'])
+		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
+		save=directory("%s/{name}/hic_format"%config['OUT_DIR'],)
+	params:
+		ref=config['REFERENCE_NAME'],
+		tools=config['JUICER_PATH'],
+		scratch=config['SCRATCH'],
+		res=config['RESOLUTION'],
+		dir="%s/scripts/"%config['HICPRO_INSTALL_DIR']
+	threads: 6
 	shell:
 		"""
-		mkdir -p {output}
-		mv -v {input.raw} {output}/
-		mv -v {input.iced} {output}/
+		mkdir -p {output.save}
+		mkdir -p {output.tmp}
+		mkdir -p {params.scratch}/tmp/
+		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {input.dir}/data/{wildcards.name}.allValidPairs -g {input.sizes} -j {params.tools}
+		wait
+		mv {output.tmp}/{wildcards.name}.allValidPairs.hic {output.tmp}/{wildcards.name}_{params.ref}.hic
+		java -jar {params.tools} addNorm -j {threads} -w {params.res} {output.tmp}/{wildcards.name}_{params.ref}.hic
+		cp -r {output.tmp}/{wildcards.name}_{params.ref}.hic {output.save}
+		"""
+
+### new hic files get the chr chromsome prefix if it is in their reference
+### in older files the chr got removed
+### for comparison to older files one might want to create new hic files without chr prefix
+rule create_hic_noChr:
+	input:
+		dir=directory("%s/{name}/hic_results"%config['OUT_DIR'],),
+		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
+	output:
+		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
+		save="%s/{name}/hic_format/{name}_%s.noChr.hic"%(config['OUT_DIR'],config['REFERENCE_NAME'])
+	params:
+		ref=config['REFERENCE_NAME'],
+		tools=config['JUICER_PATH'],
+		scratch=config['SCRATCH'],
+		res=config['RESOLUTION'],
+		dir="%s/scripts/"%config['HICPRO_INSTALL_DIR']
+	shell:
+		"""
+		mkdir -p {output.tmp}
+		sed -r "s|chr||g" {input.dir}/data/{wildcards.name}.allValidPairs > {output.tmp}/{wildcards.name}.fixed.allValidPairs
+		sed -r "s|chr||g" {input.sizes} > {output.tmp}/noChr.sizes
+
+		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {output.tmp}/{wildcards.name}.fixed.allValidPairs -g {output.tmp}/noChr.sizes -j {params.tools}
+		wait
+		mv {output.tmp}/{wildcards.name}.fixed.allValidPairs.hic {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic
+		java -jar {params.tools} addNorm -j $(nproc) -w {params.res} {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic
+		cp -r {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic {output.save}
 		"""
 
 ### pools ALL SAMPLES into one
@@ -408,63 +481,4 @@ rule cool2hic:
 		"""
 
 
-### hicpro validpairs can get converted to many formats and are itself required by some tools 
-### we convert to hic format for easy visualization in JuiceBox
-rule all_create_hic_from_validpairs:
-	input:
-		directory(expand("%s/{name}/hic_format"%config['OUT_DIR'], name=config['NAMES']))
 
-rule create_hic_from_validpairs:
-	input:
-		dir=directory("%s/{name}/hic_results"%config['OUT_DIR']),
-		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
-	output:
-		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
-		save=directory("%s/{name}/hic_format"%config['OUT_DIR'],)
-	params:
-		ref=config['REFERENCE_NAME'],
-		tools=config['JUICER_PATH'],
-		scratch=config['SCRATCH'],
-		res=config['RESOLUTION'],
-		dir="%s/scripts/"%config['HICPRO_INSTALL_DIR']
-	threads: 6
-	shell:
-		"""
-		mkdir -p {output.save}
-		mkdir -p {output.tmp}
-		mkdir -p {params.scratch}/tmp/
-		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {input.dir}/data/{wildcards.name}.allValidPairs -g {input.sizes} -j {params.tools}
-		wait
-		mv {output.tmp}/{wildcards.name}.allValidPairs.hic {output.tmp}/{wildcards.name}_{params.ref}.hic
-		java -jar {params.tools} addNorm -j {threads} -w {params.res} {output.tmp}/{wildcards.name}_{params.ref}.hic
-		cp -r {output.tmp}/{wildcards.name}_{params.ref}.hic {output.save}
-		"""
-
-### new hic files get the chr chromsome prefix if it is in their reference
-### in older files the chr got removed
-### for comparison to older files one might want to create new hic files without chr prefix
-rule create_hic_noChr:
-	input:
-		dir=directory("%s/{name}/hic_results"%config['OUT_DIR'],),
-		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
-	output:
-		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
-		save="%s/{name}/hic_format/{name}_%s.noChr.hic"%(config['OUT_DIR'],config['REFERENCE_NAME'])
-	params:
-		ref=config['REFERENCE_NAME'],
-		tools=config['JUICER_PATH'],
-		scratch=config['SCRATCH'],
-		res=config['RESOLUTION'],
-		dir="%s/scripts/"%config['HICPRO_INSTALL_DIR']
-	shell:
-		"""
-		mkdir -p {output.tmp}
-		sed -r "s|chr||g" {input.dir}/data/{wildcards.name}.allValidPairs > {output.tmp}/{wildcards.name}.fixed.allValidPairs
-		sed -r "s|chr||g" {input.sizes} > {output.tmp}/noChr.sizes
-
-		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {output.tmp}/{wildcards.name}.fixed.allValidPairs -g {output.tmp}/noChr.sizes -j {params.tools}
-		wait
-		mv {output.tmp}/{wildcards.name}.fixed.allValidPairs.hic {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic
-		java -jar {params.tools} addNorm -j $(nproc) -w {params.res} {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic
-		cp -r {output.tmp}/{wildcards.name}_{params.ref}.noChr.hic {output.save}
-		"""

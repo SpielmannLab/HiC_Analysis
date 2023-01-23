@@ -23,9 +23,16 @@ JUICER_PATH: "/data/$USER/software/juicer_tools_1.22.01.jar"
 SCRATCH: "work"
 
 OUT_DIR: "results/hicpro"
-### OUTS can be one or multiple of "bowtie_results", "hic_results" or "hic_format" 
+
+### output folders for the samples
+### OUTS can be one or multiple of "bowtie_results", "hic_results", "matrix" or "hic_format" 
+### matrix, bowtie_results and hic_results are created by running hicpro 
+### there is no advantage of excluding any of the three, except then
+### (1) hicpro scripts for step 1 and step 2 are altered to exclude matrix generation - exclude "matrix"
+### (2) the bam files are not required and can get deleted - exclude "bowtie_results"
+### "hic_format" works with copied hic results and won't restart hicpro if "hic_results" were copied already
 OUTS:
-    - "matrix"
+    - "matrix" 
     - "bowtie_results"
     - "hic_results"
     - "hic_format"
@@ -45,6 +52,3 @@ LIGATION_SITE: "GATCGATC"
 #LIGATION_SITE: "AAGCTAGCTT"
 
 
-### Note:
-# There is an error in bowtie_paring.sh that merge_pairs did not get the 4th argument ${ldir}.
-# I deleted the &> in line 92 and now it works. 
