@@ -58,7 +58,7 @@ This pipeline runs a denoise functionally provided by the tools HiCorr and DeepL
 The output data can not get visualized like a .hic or .cool file, but one can generate plots of selected regions (here target gene regions).
 In this pipeline the tools HiCorr and DeepLoop mix and mingle and some scripts might not get the correct paths. At the time of this writing HiCorr was published three months ago, so a lot of things might change soon.
 For now setting up this pipeline might require some troubleshooting with where to put the downloaded files.
-Please visit https://github.com/JinLabBioinfo/HiCorr and https://github.com/JinLabBioinfo/DeepLoop for more information.
+Please visit [HiCorr](https://github.com/JinLabBioinfo/HiCorr) and [DeepLoop](https://github.com/JinLabBioinfo/DeepLoop) for more information.
 
 ```bash
 ### quality control with hicrep creates QC folder with stratum adjusted correlation coefficient scores

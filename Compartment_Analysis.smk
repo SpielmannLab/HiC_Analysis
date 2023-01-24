@@ -23,6 +23,7 @@ rule target_genes:
 rule compareToCtrls:
 	input:
 		expand("%s/cohort/ABcompartments/{sample}/{sample}.log"%result_dir, sample=SAMPLES)
+	
 
 rule fanc_compartments:
 	input:

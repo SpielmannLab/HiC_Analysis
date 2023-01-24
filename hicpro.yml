@@ -53,4 +53,7 @@ LIGATION_SITE: "GATCGATC"
 #RES_MOTIF: "A^AGCTT"
 #LIGATION_SITE: "AAGCTAGCTT"
 
+### Note:
+# There is an error in bowtie_paring.sh that merge_pairs did not get the 4th argument ${ldir}.
+# I deleted the &> in line 92 and now it works. 
 
