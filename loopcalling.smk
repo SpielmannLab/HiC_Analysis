@@ -10,7 +10,8 @@ result_dir=config['OUTDIR']
 
 SAMPLES=config['SAMPLES_ctrl'] + config['SAMPLES_exp1']
 
-###ldl net....
+### target regions for each gene
+### to generate LDNet figures
 rule target_regions:
 	output:
 		LDNet="%s/cohort/LDNet_target_regions_r%s.txt"%(result_dir,config['RANGE'])
@@ -42,14 +43,19 @@ rule target_regions:
 		done			
 		"""
 
+### merge bedpe files to create a file usable in JuiceBox 2D Annotation
 rule merge:
 	input:
 		expand("%s/{sample}/{sample}_TAD_calls.bedpe"%(result_dir), sample=SAMPLES)
 
+### run arrowhead rule for all samples
 rule arrowhead_all:
 	input:
 		expand("%s/{sample}/arrowhead/{sample}_arrowhead.bedpe"%result_dir, sample=SAMPLES)
 
+### run Arrowhead with Juicer Tool Box 
+###  --ignore-sparsity since Arrowheads gives warnings about lack of read coverage
+### in my experience the result when working with about 150 million cis reads is fine  
 rule arrowhead:
 	input:
 		"%s/{sample}/hic_format/{sample}_%s.hic"%(config['HICPRO_INDIR'], config['REFERENCE'])
@@ -71,11 +77,13 @@ rule arrowhead:
 		cat $( ls {params.dir}/{wildcards.sample}/arrowhead/*0_blocks.bedpe) > {params.dir}/{wildcards.sample}/arrowhead/all_blocks.bedpe
 		awk 'BEGIN {{OFS="\\t"}} {{print $1,$2,$3,$4,$5,$6,".",".",".",".","255,255,0"}}' {params.dir}/{wildcards.sample}/arrowhead/all_blocks.bedpe > {output}
 		"""
-		
+
+### run hiccups rule for all samples		
 rule hiccups_all:
 	input:
 		expand(directory("%s/{sample}/hiccups/"%result_dir), sample=SAMPLES)
-		
+
+### create script including gpu for hiccus and sbatch 	
 rule hiccups:
 	input:
 		"%s/{sample}/hic_format/{sample}_%s.hic"%(config['HICPRO_INDIR'], config['REFERENCE'])
@@ -95,11 +103,12 @@ rule hiccups:
 		sbatch --gres=gpu:1 --job-name=hiccups-$job {params.scratch}/$job.sh
 		"""
 
-
+### run HiC_LDNet rule for all samples
 rule  HiC_LDNet_all:
 	input:
 		expand(directory("%s/{sample}/HiC_LDNet/regions"%(result_dir)), sample=SAMPLES)
 
+### create script including gpu for LDNet and sbatch 
 rule  HiC_LDNet:
 	input:
 		list="%s/cohort/LDNet_target_regions_r%s.txt"%(result_dir, config['RANGE']),
@@ -133,7 +142,8 @@ rule  HiC_LDNet:
 			sbatch --gres=gpu:1 --job-name=LDNet-$id --time=0-0:20:0 {params.scratch}/LDNet-script_$id.sh
 		done <{input.list}
 		"""
-			
+
+### once hiccups script has finished one can call this rule with Snakemake to create a bedpe file from hiccups results	
 rule hiccups2bedpe:
 	input:
 		"%s/{sample}/hiccups/merged_loops.bedpe"%result_dir
@@ -146,6 +156,7 @@ rule hiccups2bedpe:
 		awk ' BEGIN {{OFS="\\t"}} {{print $1,$2,$3,$4,$5,$6,".",".",".",".","255,0,255"}}' {input} > {output}
 		"""
 
+### merge the bedpe files. if peakachu output is generated uncomment peakachu input line
 rule bedpe2callset:
 	input:
 		hiccups="%s/{sample}/hiccups/{sample}_hiccups.bedpe"%result_dir,

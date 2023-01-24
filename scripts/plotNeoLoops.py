@@ -1,3 +1,12 @@
+#!/bin/python
+
+############################
+### Code created by Xiaotao Wang and James Hawley and published at
+### https://github.com/XiaoTaoWang/NeoLoopFinder
+### Modified by K. Schultz, January 2023
+############################
+
+
 from neoloop.visualize.core import * 
 import cooler
 import sys
