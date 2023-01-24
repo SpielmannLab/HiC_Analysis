@@ -1,12 +1,30 @@
 # Pipeline running HiC-Pro on SLURM
 
-This pipeline uses Snakemake v6.  
-Download example files
+## General
+This pipeline was created using Snakemake version 5, but will also work with version 6.  
+Download example (incomplete) files
 
 ```bash
 wget https://data.cyverse.org/dav-anon/iplant/home/kschultz/example.zip
-
 ```
+
+There are multiple separate workflow steps. 
+While most rules in a workflow use conda environments that Snakemake will automatically create, some tools, such as HiC-Pro, are not available with conda and require a manual installation.
+Please follow the instructions provided by the authors. 
+Some rules also need access to some supplementary files, that are provided by the original distributor.
+\
+Most workflows consist of a Snakefile \<something\>.smk and a corresponding configuration file \<something\>.yml
+You can, however, use different config files or overwrite a variable set in in the .yml file.
+
+```bash
+### use a different config file
+snakemake -s something.smk --configfile something_else.yml
+### overwrite a set variable 
+snakemake -s something.smk --config SAMPLES=test2
+```
+
+All workflows are using a SCRATCH directory for storing temp data. You can set any directory as scratch directory in the configuration (.yml) files.
+If your scratch directory is not automatically removed after the job has finished, please remember to delete the temp files.
 
 # Alignment
 For Alignment the pipeline starts HiC-Pro in parallel mode on a SLURM cluster.
