@@ -28,10 +28,25 @@ snakemake -s hicpro.smk all --cores $n --use-conda --config SCRATCH=$SCRATCH
 snakemake -s hicpro.smk pool --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
 
+## Quality Control
+
 ```bash
 ### quality control with hicrep creates QC folder with stratum adjusted correlation coefficient scores
-snakemake -s hicpro.smk pool hicrep --cores $n --use-conda --config SCRATCH=$SCRATCH  
+snakemake -s hicpro.smk hicrep --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
+
+## Denoise
+This pipeline runs a denoise functionally provided by the tools HiCorr and DeepLoop. 
+The output data can not get visualized like a .hic or .cool file, but one can generate plots of selected regions (here target gene regions).
+In this pipeline the tools HiCorr and DeepLoop mix and mingle and some scripts might not get the correct paths. At the time of this writing HiCorr was published three months ago, so a lot of things might change soon.
+For now setting up this pipeline might require some troubleshooting with where to put the downloaded files.
+Please visit https://github.com/JinLabBioinfo/HiCorr and https://github.com/JinLabBioinfo/DeepLoop for more information.
+
+```bash
+### quality control with hicrep creates QC folder with stratum adjusted correlation coefficient scores
+snakemake -s denoise.smk  plot_all --cores $n --use-conda --config SCRATCH=$SCRATCH  
+```
+
 
 # SV Analysis
 For Structural Variant Calling we use HiC-Breakfinder and for Analysis NeoloopFinder.  
@@ -89,7 +104,7 @@ Peakachu offers scripts to identify differential chromatin loops between samples
 In the configuration peakachu.yml one has to select a pool threshold. The best threshold may vary between samples. 
 For best results try multiple and select the ones best working for each sample.
 Create two directories peakachudiff\_input\_samples and peakachudiff\_input\_controls. Copy your selection of pooled loops calls (.txt files) into the respective directory.
-! All samples of configuration SAMPLES_exp1 must be present in peakachudiff\_input\_samples.
+All samples of configuration SAMPLES_exp1 must be present in peakachudiff\_input\_samples.
 
 ```bash
 ### merge control loops and compare each sample to merged set of loops
@@ -98,7 +113,7 @@ snakemake -s peakachu.smk peakachuDiff_mergedCtrl --cores $n --use-conda --confi
 snakemake -s peakachu.smk peakachuDiff_eachCtrl --cores $n --use-conda --config SCRATCH=$SCRATCH
 ```
 
-# Other Loop Caller
+## Other Loop Caller
 Rules hiccups and HiC LDNet start new batch jobs with gcpu request.
 The rule itself only creates the output directory, not the files. Please wait for the jobs to finish.
 ```bash

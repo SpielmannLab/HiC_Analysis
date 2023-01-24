@@ -125,8 +125,8 @@ rule ref_sizes:
 ### the link follows the pipeline nomenclature, while the fastq may contain additional strings
 rule link_files:
 	input:
-		R1=lambda wildcards: glob.glob("%s/%s*%s_R1*.f*q.gz"%(config['SAMPLES_PATH'], wildcards.sample, wildcards.lane)),
-		R2=lambda wildcards: glob.glob("%s/%s*%s_R2*.f*q.gz"%(config['SAMPLES_PATH'], wildcards.sample, wildcards.lane)),
+		R1=lambda wildcards: glob.glob("%s/*%s*%s_R1*.f*q.gz"%(config['SAMPLES_PATH'], wildcards.sample, wildcards.lane)),
+		R2=lambda wildcards: glob.glob("%s/*%s*%s_R2*.f*q.gz"%(config['SAMPLES_PATH'], wildcards.sample, wildcards.lane)),
 	output:
 		R1="%s/rawData/{sample}-{lane}_R1.fastq.gz"%config['SCRATCH'],
 		R2="%s/rawData/{sample}-{lane}_R2.fastq.gz"%config['SCRATCH']
@@ -432,6 +432,7 @@ rule pool:
 		echo "Merge "$cool_files" to "{output}"."
 		cooler merge {output} $cool_files
 		"""
+
 
 ### create a multi cooler files from one high resolution cooler file
 ### allowed resolutions must be product from input resolution

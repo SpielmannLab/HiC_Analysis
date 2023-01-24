@@ -1,0 +1,40 @@
+HICPRO_INDIR: "results/Project_01"
+genome: "hg19"
+enzyme: "DPNII"
+
+## requieres a set of HiCoor and DeepLoop files
+## check out https://github.com/JinLabBioinfo/HiCorr for download information
+## example for DPNII: wget http://hiview.case.edu/ssz20/tmp.HiCorr.ref/ref/DPNII_HiCorr_ref.tar.gz
+
+fragbed: "denoise_data/HiCorr/ref/DPNII/hg19.DPNII.frag.bed" # enzyme fragment bed
+## provided in HiCorr reference files, HindIII, DPNII for mm10 and hg19 are provided, other type of reference files could be generated upon request
+  
+DeepLoopBed: "denoise_data/HiCorr/ref/DPNII/hg19_DPNII_anchors_avg.bed" # official nomenclature: $DeepLoopPath/DeepLoop_models/ref/${genome}_${enzyme}_anchor_bed/
+
+## get DeepLoop files
+## check out https://github.com/JinLabBioinfo/DeepLoop for download information
+DeepLoopPath: "denoise_data/DeepLoop/DeepLoop_models"
+
+
+OUT_DIR: "results/Project_01/HiCorr"
+
+SAMPLES:
+    - "DD-mut"
+    - "DD-wt"
+    
+TARGET_GENES:
+    - "CDH6"
+    - "DST"
+    - "MTUS2"
+    - "SLC35G2"
+    - "ZDBF2"
+    - "PDGFRA"
+
+SCRATCH: "work"
+
+# chrom startpos    endpos  genename
+GENELIST: "example/genes_hg19.bedpe"
+### target resolution 
+RESOLUTION: "10000"
+
+### Note: HiCorr has a lot of hardcoded paths that were a struggle. I changed the code to match our paths in denoise.zip
