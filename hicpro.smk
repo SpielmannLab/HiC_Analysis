@@ -57,8 +57,8 @@ rule configuration:
 		cp {params.dir}/config-hicpro.txt {output}
 
 		sed -i "s@REFERENCE_GENOME =.*@REFERENCE_GENOME = {params.ref}@g" {output}
-		sed -i "s@GENOME_SIZE =.*@GENOME_SIZE = {input.sizes}@g" {output}
-		sed -i "s@GENOME_FRAGMENT =.*@GENOME_FRAGMENT = {input.fraq}@g" {output}
+		sed -i "s@GENOME_SIZE =.*@GENOME_SIZE = $PWD/{input.sizes}@g" {output}
+		sed -i "s@GENOME_FRAGMENT =.*@GENOME_FRAGMENT = $PWD/{input.fraq}@g" {output}
 		sed -i "s@BOWTIE2_IDX_PATH =.*@BOWTIE2_IDX_PATH = {params.bw_idx}@g" {output}
 		sed -i "s@LIGATION_SITE =.*@LIGATION_SITE ={params.ligation}@g" {output}
 
@@ -218,9 +218,7 @@ rule split_sample:
 		"""
 
 ### run HiC-Pro in parallel mode (-p flag)
-### this creates inputfiles_$USER.txt, which lists all input files
-### using sed command to change inputfiles_$USER.txt because the paths are always messed up
-### this may be fixed in later HiC-Pro versions 
+### this creates inputfiles_$USER.txt, which lists all input files (R1 only)
 ### HiC-Pro also generates two scripts: HiCPro_step1_$USER.sh and HiCPro_step2_$USER.sh
 ### starting HiCPro_step1_$USER.sh in this rule
 rule hicpro_parallel_step1:
@@ -241,7 +239,6 @@ rule hicpro_parallel_step1:
 		set +o pipefail
 		PATH={params.dir}/bin:$PATH
 		yes | HiC-Pro -i {params.scratch}/splits -o {params.scratch}/results -c {input.conf} -p
-		sed -i "s@^@../splits/@" {params.scratch}/results/inputfiles_$USER.txt
 		cd {params.scratch}/results
 		srun HiCPro_step1_*.sh
 		"""
