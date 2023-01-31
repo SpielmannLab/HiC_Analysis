@@ -14,6 +14,8 @@ configfile: "hicpro.yml"
 from random import random
 run_nr=int(random()*1000000000)
 
+os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
+
 n_Lanes=config['LANES']
 lanes=list()
 if n_Lanes:
@@ -221,29 +223,43 @@ rule split_sample:
 ### this creates inputfiles_$USER.txt, which lists all input files (R1 only)
 ### HiC-Pro also generates two scripts: HiCPro_step1_$USER.sh and HiCPro_step2_$USER.sh
 ### starting HiCPro_step1_$USER.sh in this rule
+### check if parallel jobs stopped running every 5 min
 rule hicpro_parallel_step1:
 	input:
 		directory(expand("%s/splits/{name}/"%config['SCRATCH'], name=config['NAMES'])),
 		conf="%s/%s-config.yml"%(config['SCRATCH'],run_nr)
 	output:
-		directory(expand("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'], name=config["NAMES"])),
+		bwt=directory(expand("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'], name=config["NAMES"])),
 		data=directory(expand("%s/results/hic_results/data/{name}/"%config['SCRATCH'], name=config["NAMES"])),
 		logs=directory(expand("%s/results/logs/{name}/"%config['SCRATCH'], name=config["NAMES"]))
 	conda: "envs/HiC-Pro.yml"
 	params:
 		scratch=config['SCRATCH'],
 		dir=config['HICPRO_INSTALL_DIR']
-	threads: 2
+	threads: 1
 	shell:
 		"""
 		set +o pipefail
 		PATH={params.dir}/bin:$PATH
+		export SCRIPTS={params.dir}/scripts
 		yes | HiC-Pro -i {params.scratch}/splits -o {params.scratch}/results -c {input.conf} -p
 		cd {params.scratch}/results
-		srun HiCPro_step1_*.sh
+		job=$RANDOM
+		echo "looking for jobs called hicpro_step1_"$job
+		sbatch -p shortterm -t 3-0:0:0 -c 2 -J hicpro_step1_$job HiCPro_step1_*.sh 
+		
+		while true; do sleep 300
+			jobList=$(squeue --name "hicpro_step1_"$job --format="%.18i %.9P %.8j %.30u %.8T %.10M %.9l %.6D %R" | wc -l)
+			if [ "$jobList" == "1" ] ; then 
+				echo "Step one has finished"
+				break
+			fi
+		done
 		"""
+		
 
 ### run the 2nd step HiCPro_step2_$USER.sh
+### step 2 does not use parallelisation? so we srun instead of sbatch 
 rule hicpro_parallel_step2:
 	input:
 		directory(expand("%s/results/bowtie_results/bwt2/{name}/"%config['SCRATCH'], name=config["NAMES"])),
@@ -254,7 +270,7 @@ rule hicpro_parallel_step2:
 		iced=directory(expand("%s/results/hic_results/matrix/{name}/raw"%config['SCRATCH'], name=config["NAMES"]))
 	params:
 		scratch=config['SCRATCH']
-	threads: 1
+	threads: 8
 	shell:
 		"""
 		set +o pipefail
@@ -363,7 +379,7 @@ rule create_hic_from_validpairs:
 		tools=config['JUICER_PATH'],
 		scratch=config['SCRATCH'],
 		res=config['RESOLUTION'],
-		dir="%s/scripts/"%config['HICPRO_INSTALL_DIR']
+		dir=config['HICPRO_INSTALL_DIR']
 	threads: 6
 	shell:
 		"""
@@ -410,7 +426,7 @@ rule create_hic_noChr:
 ### highest resolution is hárd coded to 5000 so bin 25000 is possible
 rule pool:
 	input:
-		expand(directory("%s/{name}/hic_results"%config['OUT_DIR'],), name=config['NAMES'])
+		directory(expand("%s/{name}/hic_results"%config['OUT_DIR'], name=config['NAMES']))
 	output:
 		"%s/%s/cool_format/%s.5000.cool"%(config['OUT_DIR'],config['POOL'], config['POOL'])
 	params:
