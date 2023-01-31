@@ -27,8 +27,16 @@ All workflows are using a SCRATCH directory for storing temp data. You can set a
 If your scratch directory is not automatically removed after the job has finished, please remember to delete the temp files.
 
 # Alignment
-For Alignment the pipeline starts HiC-Pro in parallel mode on a SLURM cluster.
+We're offering two pipeline to align HiC Fastq files.
 
+HiC-Pro creates .validPairs files and statistical information that is required for some other tools. 
+The validPairs can get converted to .hic, .cool or .matrix format.
+
+The Juicer scripts create .hic files and also offer scaffolding. Scaffolding is useful when references are limited or when dealing with many large structural variants (e.g. chromothripsis).
+
+## HiC-Pro
+For Alignment the pipeline starts HiC-Pro in parallel mode on a SLURM cluster.
+Please install HiC-Pro by following the [instructions](https://github.com/nservant/HiC-Pro). The path to the installation directory in required in the configuration file.
 ```bash
 ### when run in separate steps use permanent work directory
 snakemake -s hicpro.smk hicpro_parallel_step1 --cores $n --use-conda
@@ -46,7 +54,45 @@ snakemake -s hicpro.smk all --cores $n --use-conda --config SCRATCH=$SCRATCH
 snakemake -s hicpro.smk pool --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
 
+## Juicer
+Clone or download Aiden Lab [Juicer repo](https://github.com/aidenlab/juicer).
+
+Adjust juicer.sh depending on Cluster System. 
+For example when working with the omics cluster in Luebeck you may add the line *isOMICS=1 .* to /juicer/SLURM/juicer.sh and extent the following if statement with
+
+```bash
+elif [ $isOMICS -eq 1 ]
+then    
+    load_bwa="module load bwa/v0.7.17"
+    queue="shortterm"
+    queue_time="0-12:00:00"
+    long_queue="longterm"
+    long_queue_time="3-00:00:00"
+    load_gpu="module load nvidia-cuda/11.1-native"
+```
+
+For Scaffolding 
+Clone or download Aiden Lab [3d-dna repo](https://github.com/aidenlab/3d-dna).
+The workflow will use a singularity image of [w2rap-contigger](https://github.com/bioinfologics/w2rap-contigger), but not with the snakemake container setting.
+If you prefer to use a local installation, remove the "singularity exec {params.img}" in Juicer.smk.
+
+```bash
+### Alignment to reference, i.a. creates .bam and .hic files i.a. 
+### The script spawns multiple jobs. Once they've finished the output files are in the output folder
+snakemake -s Juicer.smk juicerPipeline --cores $n --config SCRATCH=$SCRATCH 
+```
+
+
+```bash
+### Scaffold Alignment, creates .bam 
+### The script spawns multiple jobs. Wait for them to finish before starting rule asmPipeline. 
+snakemake -s Juicer.smk juicerAssembly --cores $n --config SCRATCH=$SCRATCH   
+### asmPipeline creates a .hic and .assembly file. 
+snakemake -s Juicer.smk asmPipeline --cores $n --config SCRATCH=$SCRATCH 
+```
+
 ## Quality Control
+The tool hicrep works with samples in the .cool format. The hicpro.smk contains rules for converting .hic to .cool, which will be included in the workflow when calling the rule *hicrep*.
 
 ```bash
 ### quality control with hicrep creates QC folder with stratum adjusted correlation coefficient scores
@@ -54,8 +100,8 @@ snakemake -s hicpro.smk hicrep --cores $n --use-conda --config SCRATCH=$SCRATCH
 ```
 
 ## Denoise
-This pipeline runs a denoise functionally provided by the tools HiCorr and DeepLoop. 
-The output data can not get visualized like a .hic or .cool file, but one can generate plots of selected regions (here target gene regions).
+This pipeline runs a denoise functionality provided by the tools HiCorr and DeepLoop. 
+The output data can **not** get visualized like a .hic or .cool file, but one can generate plots of selected regions (here target gene regions).
 In this pipeline the tools HiCorr and DeepLoop mix and mingle and some scripts might not get the correct paths. At the time of this writing HiCorr was published three months ago, so a lot of things might change soon.
 For now setting up this pipeline might require some troubleshooting with where to put the downloaded files.
 Please visit [HiCorr](https://github.com/JinLabBioinfo/HiCorr) and [DeepLoop](https://github.com/JinLabBioinfo/DeepLoop) for more information.
