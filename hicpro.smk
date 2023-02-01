@@ -384,6 +384,7 @@ rule create_hic_from_validpairs:
 	shell:
 		"""
 		mkdir -p {output.tmp}
+		mkdir -p {output.save}
 		mkdir -p {params.scratch}/tmp/
 		bash {params.dir}/bin/utils/hicpro2juicebox.sh -o {output.tmp}/ -t {params.scratch}/tmp/ -i {input.dir}/data/{wildcards.name}.allValidPairs -g {input.sizes} -j {params.tools}
 		wait
