@@ -365,7 +365,7 @@ rule move_logs:
 #     - "hic_format" <<<<<
 rule all_create_hic_from_validpairs:
 	input:
-		expand("%s/{sample}/hic_format/{sample}_%s.hic"%(config['OUT_DIR'],config['REFERENCE_NAME']), sample=config['NAMES'])
+		directory(expand("%s/{name}/hic_format"%(config['OUT_DIR']), name=config['NAMES']))
 
 rule create_hic_from_validpairs:
 	input:
@@ -373,7 +373,7 @@ rule create_hic_from_validpairs:
 		sizes="data/%s.sizes"%(config['REFERENCE_NAME'])
 	output:
 		tmp=directory("%s/validPairs2hic/{name}"%config['SCRATCH']),
-		save="%s/{name}/hic_format/{name}_%s.hic"%(config['OUT_DIR'],config['REFERENCE_NAME'])
+		save=directory("%s/{name}/hic_format"%(config['OUT_DIR']))
 	params:
 		ref=config['REFERENCE_NAME'],
 		tools=config['JUICER_PATH'],
@@ -389,7 +389,7 @@ rule create_hic_from_validpairs:
 		wait
 		mv {output.tmp}/{wildcards.name}.allValidPairs.hic {output.tmp}/{wildcards.name}_{params.ref}.hic
 		java -jar {params.tools} addNorm -j {threads} -w {params.res} {output.tmp}/{wildcards.name}_{params.ref}.hic
-		cp -r {output.tmp}/{wildcards.name}_{params.ref}.hic {output.save}
+		cp -r {output.tmp}/{wildcards.name}_{params.ref}.hic {output.save}/{wildcards.name}_{params.ref}.hic
 		"""
 
 ### new hic files get the chr chromsome prefix if it is in their reference
@@ -550,4 +550,5 @@ rule hicrep:
 		cat $(ls {params.scratch}/hicrep/*) > {output}
 		rm -r {params.scratch}/hicrep/
 		"""
+
 
