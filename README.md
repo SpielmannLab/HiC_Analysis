@@ -111,8 +111,10 @@ Please visit [HiCorr](https://github.com/JinLabBioinfo/HiCorr) and [DeepLoop](ht
 snakemake -s denoise.smk  plot_all --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
 
+# Analysis
+![Recommended Process](https://de.cyverse.org/api/download?path=%2Fiplant%2Fhome%2Fkschultz%2Fflowchart_HiC.drawio.png)
 
-# SV Analysis
+## SV Analysis
 For Structural Variant Calling we use HiC-Breakfinder and for Analysis NeoloopFinder.  
 For HiC-Breakfinder please download associated files:
 https://salkinstitute.box.com/s/m8oyv2ypf8o3kcdsybzcmrpg032xnrgx
@@ -132,7 +134,7 @@ snakemake -s neoloopFinder.smk all --cores $n --use-conda --config SCRATCH=$SCRA
 snakemake -s neoloopFinder.smk plot --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
 
-# FANC loops and insulation 
+## FANC loops and insulation 
 ```bash
 ### detect loops and create plot of target gene regions
 snakemake -s fanc.smk all_loops --cores $n --use-conda --config SCRATCH=$SCRATCH 
@@ -143,7 +145,7 @@ snakemake -s fanc.smk plot_APA --cores $n --use-conda --config SCRATCH=$SCRATCH
 snakemake -s fanc.smk matrix_APA --cores $n --use-conda --config SCRATCH=$SCRATCH 
 ```
 
-# A/B Compartments
+## A/B Compartments
 Compartment Analysis with FANC (works with fanc.yml)
 ```bash
 ### for every sample create chromosome overview figures
@@ -156,8 +158,8 @@ snakemake -s Compartment_Analysis.smk target_genes --cores $n --use-conda --conf
 snakemake -s Compartment_Analysis.smk compareToCtrls --cores $n --use-conda --config SCRATCH=$SCRATCH
 ```
 
-# Loop Calling 
-## Peakachu
+## Loop Calling 
+### Peakachu
 ```bash
 ### peakachu version 1
 snakemake -s peakachu.smk peakachu_v1 --cores $n --use-conda --config SCRATCH=$SCRATCH
@@ -177,7 +179,7 @@ snakemake -s peakachu.smk peakachuDiff_mergedCtrl --cores $n --use-conda --confi
 snakemake -s peakachu.smk peakachuDiff_eachCtrl --cores $n --use-conda --config SCRATCH=$SCRATCH
 ```
 
-## Other Loop Caller
+### Other Loop Caller
 Rules hiccups and HiC LDNet start new batch jobs with gcpu request.
 The rule itself only creates the output directory, not the files. Please wait for the jobs to finish.
 ```bash
@@ -189,7 +191,7 @@ snakemake -s loopcalling.smk arrowhead_all --cores $n --use-conda --config SCRAT
 ```
 
 
-# CHESS HiC Analysis
+## CHESS HiC Analysis
 ```bash
 snakemake -s CHESS.smk all --cores $n --use-conda --config SCRATCH=$SCRATCH  
 ```
