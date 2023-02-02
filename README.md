@@ -113,6 +113,8 @@ snakemake -s denoise.smk  plot_all --cores $n --use-conda --config SCRATCH=$SCRA
 
 # Analysis
 
+![Recommended Process](https://data.cyverse.org/dav-anon/iplant/home/kschultz/flowchart_HiC.drawio.png)
+
 ## SV Analysis
 For Structural Variant Calling we use HiC-Breakfinder and for Analysis NeoloopFinder.  
 For HiC-Breakfinder please download associated files:
