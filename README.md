@@ -147,7 +147,7 @@ snakemake -s fanc.smk matrix_APA --cores $n --use-conda --config SCRATCH=$SCRATC
 ```
 
 ## A/B Compartments
-Compartment Analysis with FANC (works with fanc.yml). Start an interactive job with xx cores and xx GB memory. Then, ```module load snakemake/v5.25.0```. Submit the following scripts.
+Compartment Analysis with FANC (works with fanc.yml). Start an interactive job with xx cores and xx GB memory. It uses the conda environment *env/fanc.yml*. But for some reason it throws errors. Therefore, create the conda environment first and then run it. The script has been adapted accordingly.
 
 ```bash
 ### for every sample create chromosome overview figures
