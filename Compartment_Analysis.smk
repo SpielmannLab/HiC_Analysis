@@ -14,11 +14,11 @@ res=["50000", "500000", "100000"] # bin size for compartment analysis
 
 rule genome_overview:
 	input:
-		expand(directory("%s/{sample}/fanc/compartments/genome/"%result_dir), sample=SAMPLES)
+		directory(expand("%s/{sample}/fanc/compartments/genome/"%result_dir, sample=SAMPLES))
 
 rule target_genes:
 	input:
-		expand(directory("%s/{sample}/fanc/compartments/targetRegions/r%s/"%(result_dir, config['RANGE'])), sample=SAMPLES)
+		directory(expand("%s/{sample}/fanc/compartments/targetRegions/r%s/"%(result_dir, config['RANGE']), sample=SAMPLES))
 
 rule compareToCtrls:
 	input:
@@ -40,9 +40,12 @@ rule fanc_compartments_n_kb:
 		ev="%s/{sample}/fanc/compartments/matrix/{sample}.{res}.ev.bed"%result_dir
 	params:
 		ref=config['REFERENCE_FILE']
-	conda: "envs/fanc.yml"
+	# conda: "envs/fanc.yml"
 	shell:
 		"""
+        PATH=$WORK/.omics/anaconda3/bin:$PATH #add the anaconda installation path to the bash path
+        source $WORK/.omics/anaconda3/etc/profile.d/conda.sh # some reason conda commands are not added by default
+        conda activate fanc
 		fanc compartments -d {output.domain} -v {output.ev} -g {params.ref} {input}@{wildcards.res} {output.matrix}
 		"""
 
@@ -182,9 +185,12 @@ rule fanc_compartments_genome:
 	params:
 		ref=config['REFERENCE_FILE'],
 		prefix=config['PREFIX']
-	conda: "envs/fanc.yml"
+	# conda: "envs/fanc.yml"
 	shell:
 		"""
+        PATH=$WORK/.omics/anaconda3/bin:$PATH #add the anaconda installation path to the bash path
+        source $WORK/.omics/anaconda3/etc/profile.d/conda.sh # some reason conda commands are not added by default
+        conda activate fanc
 		mkdir -p {output.plots}
 		for chr in $(seq 1 1 22) X Y ; do 
 			fancplot  --pdf-text-as-font  -o {output.plots}/{wildcards.sample}_chr$chr.pdf {params.prefix}$chr --plot square {input.matrix} 
@@ -232,9 +238,12 @@ rule fanc_compartments_region:
 		directory("%s/{sample}/fanc/compartments/targetRegions/r%s/"%(result_dir, config['RANGE']))
 	params:
 		genes=config['TARGET_GENES']
-	conda: "envs/fanc.yml"
+	# conda: "envs/fanc.yml"
 	shell:
 		"""
+        PATH=$WORK/.omics/anaconda3/bin:$PATH #add the anaconda installation path to the bash path
+        source $WORK/.omics/anaconda3/etc/profile.d/conda.sh # some reason conda commands are not added by default
+        conda activate fanc
 		mkdir -p {output}
 		i=0
 		IFS=' ' read -r -a genes <<< "{params.genes}"
