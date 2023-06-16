@@ -23,9 +23,9 @@ cat hicpro.yml
 # merge_pairs $sample_dir $R1 $R2 ${ldir}
 
 ## for parallel mode 
-snakemake -s hicpro.smk hicpro_parallel_step1 --cores $(nproc) --use-conda 
+snakemake -s hicpro.smk hicpro_parallel_step1 --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/
 ### wait for jobs to finish ?
 #snakemake -s hicpro.smk hicpro_parallel_step2 --cores $(nproc) --use-conda 
 
-snakemake -s hicpro.smk pool --cores $(nproc) --use-conda 
+snakemake -s hicpro.smk pool --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/
 
