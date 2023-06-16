@@ -10,7 +10,8 @@
 
 ###later add #SBATCH --tmp=500GB
 
-PATH=$PATH:/home/schultz/miniconda3/bin
+PATH=$WORK/.omics/anaconda3/bin:$PATH #add the anaconda installation path to the bash path
+source $WORK/.omics/anaconda3/etc/profile.d/conda.sh # some reason conda commands are not added by default
 
 cat hicpro.yml
 
