@@ -66,6 +66,10 @@ rule configuration:
 
 		sed -i "s@PAIR1_EXT =.*@PAIR1_EXT = _R1@g" {output}
 		sed -i "s@PAIR2_EXT =.*@PAIR2_EXT = _R2@g" {output}
+        sed -i "s/N_CPU =.*/N_CPU = 2/g" {output}
+        sed -i "s/JOB_WALLTIME =.*/JOB_WALLTIME = 3-00:00:00/g" {output}
+ 		sed -i "s/JOB_MEM =.*/JOB_MEM = 8000/g" {output}
+ 		sed -i "s/JOB_QUEUE =.*/JOB_QUEUE = shortterm/g" {output}
 		"""
 
 ### You may change and add parameters like this
@@ -136,6 +140,7 @@ rule link_files:
 		scratch=config['SCRATCH']
 	shell:
 		"""
+        mkdir -p {params.scratch}/rawData #Create a directory for creating links
 		for f in {input.R1} ; do
 			ln -s $f {params.scratch}/rawData/{wildcards.sample}-{wildcards.lane}_R1.fastq.gz
 		done
@@ -246,7 +251,7 @@ rule hicpro_parallel_step1:
 		cd {params.scratch}/results
 		job=$RANDOM
 		echo "looking for jobs called hicpro_step1_"$job
-		sbatch -p shortterm -t 3-0:0:0 -c 2 -J hicpro_step1_$job HiCPro_step1_*.sh 
+		sbatch -p shortterm -c 2 -J hicpro_step1_$job HiCPro_step1_*.sh # removed time limit -t 3-0:0:0 
 		
 		while true; do sleep 300
 			jobList=$(squeue --name "hicpro_step1_"$job --format="%.18i %.9P %.8j %.30u %.8T %.10M %.9l %.6D %R" | wc -l)
