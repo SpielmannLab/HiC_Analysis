@@ -1,30 +1,30 @@
 ### use full paths
 ### 
-HICPRO_INSTALL_DIR: "/data/$USER/tools/HiC-Pro-master"
-REF_IDX_DIR:  "/data/$USER/projects/HiC/pipeline/Preprocessing/data/index" # bowtie2 index
-SCRATCH: "/data/$USER/projects/HiC/pipeline/Processing/work"
-SAMPLES_PATH: "/data/$USER/projects/HiC/pipeline/Processing/data/test_dataset/"
+HICPRO_INSTALL_DIR: "/data/humangen_external/HiC/installation/HiC-Pro"
+REF_IDX_DIR:  "/data/humangen_external/schultz/projects/HiC/pipeline/Preprocessing/data/index" # bowtie2 index
+SCRATCH: "$SCRATCH"
+SAMPLES_PATH: "/data/humangen_external/HiC/fastqfiles"
 
 ### 
 SAMPLES:
-    - "test"
+    - "DL001"
     
 RENAME: "TRUE"
 NAMES:
-    - "test_sample"
+    - "DNMT3AwtC2"
 
 POOL: "pooled-test-samples"
  
 LANES: 1
-REFERENCE_NAME: "hg19"
+REFERENCE_NAME: "hg38"
 
 RESOLUTION: "10000" # highest resolution
 PREFIX: "" # either "" or "chr" - whether or not chromosome names in hic while should have prefix
 
-JUICER_PATH: "/data/$USER/software/juicer_tools_1.22.01.jar"
-SCRATCH: "work"
+JUICER_PATH: "/data/humangen_external/HiC/installation/Juicer/juicer_tools_1.22.01.jar"
+SCRATCH: "$SCRATCH"
 
-OUT_DIR: "results/hicpro"
+OUT_DIR: "/data/humangen_external/HiC/results/hicpro"
 
 ### output folders for the samples
 ### OUTS can be one or multiple of "bowtie_results", "hic_results", "matrix" or "hic_format" 
@@ -39,7 +39,7 @@ OUTS:
     - "hic_results"
     - "hic_format"
 
-REFERENCE_FILE: "/data/$USER/reference/organisms/human/hg19/hg19.fa"
+REFERENCE_FILE: "/data/humangen_external/reference/organisms/human/hg38/hg38.fa"
 
 ENZYME: "DpnII"
 RES_MOTIF: "^GATC"
