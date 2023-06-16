@@ -2,7 +2,7 @@
 ### 
 HICPRO_INSTALL_DIR: "/data/humangen_external/HiC/installation/HiC-Pro"
 REF_IDX_DIR:  "/data/humangen_external/schultz/projects/HiC/pipeline/Preprocessing/data/index" # bowtie2 index
-SCRATCH: "$SCRATCH"
+SCRATCH: "/data/humangen_external/HiC/scratch"
 SAMPLES_PATH: "/data/humangen_external/HiC/fastqfiles"
 
 ### 
@@ -22,7 +22,6 @@ RESOLUTION: "10000" # highest resolution
 PREFIX: "" # either "" or "chr" - whether or not chromosome names in hic while should have prefix
 
 JUICER_PATH: "/data/humangen_external/HiC/installation/Juicer/juicer_tools_1.22.01.jar"
-SCRATCH: "$SCRATCH"
 
 OUT_DIR: "/data/humangen_external/HiC/results/hicpro"
 
