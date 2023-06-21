@@ -519,11 +519,11 @@ rule hic2cool:
 		"""
 		export HDF5_USE_FILE_LOCKING=FALSE
 		export _JAVA_OPTIONS="-Xmx12g -Xms5g"	
-		mkdir -p {params.scratch}/{wildcards.sample}/
-		cp {input} {params.scratch}/{wildcards.sample}/
-		hic2cool convert -p {threads} -r 0 {params.scratch}/{wildcards.sample}/$(basename {input}) {params.scratch}/{wildcards.sample}/tmp 
-		cp -rf {params.scratch}/{wildcards.sample}/tmp.mcool {output}
-		rm -rf {params.scratch}/{wildcards.sample}/tmp.mcool 
+		mkdir -p {params.scratch}/{wildcards.name}/
+		cp {input} {params.scratch}/{wildcards.name}/
+		hic2cool convert -p {threads} -r 0 {params.scratch}/{wildcards.name}/$(basename {input}) {params.scratch}/{wildcards.name}/tmp 
+		cp -rf {params.scratch}/{wildcards.name}/tmp.mcool {output}
+		rm -rf {params.scratch}/{wildcards.name}/tmp.mcool 
 		"""	
 
 
