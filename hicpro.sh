@@ -28,10 +28,10 @@ cat hicpro.yml
 ## snakemake -s hicpro.smk hicpro_parallel_step2 --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/
 
 # or just run it all.
-# snakemake -s hicpro.smk all --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/ #--config SCRATCH=$SCRATCH #Check if $SCRATCH works.
+snakemake -s hicpro.smk all --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/ #--config SCRATCH=$SCRATCH #Check if $SCRATCH works.
 
-# Do QC
-snakemake -s hicpro.smk hicrep --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/ --config SCRATCH=$SCRATCH
+# Do QC #Does not work due to some kind of buffer error.
+# snakemake -s hicpro.smk hicrep --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/ --config SCRATCH=$SCRATCH
 
 # For pooling multiple samples together.
 #snakemake -s hicpro.smk pool --cores $(nproc) --use-conda --conda-prefix $WORK/hic_conda_envs/
