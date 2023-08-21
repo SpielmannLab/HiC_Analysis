@@ -250,8 +250,10 @@ rule hicpro_parallel_step1:
 		yes | HiC-Pro -i {params.scratch}/splits -o {params.scratch}/results -c {input.conf} -p
 		cd {params.scratch}/results
 		job=$RANDOM
+        # some lines in the HiCPro_step1_.sh script seems to be a problem. Remove them.
+        grep -h -v "SBATCH -\\w $" HiCPro_step1_*.sh | grep -h -v "SBATCH --.*=$" > HiCPro_step1_edited.sh
+        sbatch -p shortterm -t 4-0:0:0 -c 2 -J hicpro_step1_$job --mem-per-cpu=15GB HiCPro_step1_edited.sh 
 		echo "looking for jobs called hicpro_step1_"$job
-		sbatch -p shortterm -c 2 -J hicpro_step1_$job HiCPro_step1_*.sh # removed time limit -t 3-0:0:0 
 		
 		while true; do sleep 300
 			jobList=$(squeue --name "hicpro_step1_"$job --format="%.18i %.9P %.8j %.30u %.8T %.10M %.9l %.6D %R" | wc -l)
