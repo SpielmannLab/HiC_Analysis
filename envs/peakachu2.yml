@@ -4,6 +4,7 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - pip
   - cooler
   - numba
   - scikit-learn=1.1.2
