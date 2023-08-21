@@ -162,12 +162,14 @@ snakemake -s Compartment_Analysis.smk compareToCtrls --cores $n --use-conda --co
 
 ## Loop Calling 
 ### Peakachu
-```bash
-### peakachu version 1
-snakemake -s peakachu.smk peakachu_v1 --cores $n --use-conda --config SCRATCH=$SCRATCH
-### peakachu version 2
-snakemake -s peakachu.smk peakachu_v2 --cores $n --use-conda --config SCRATCH=$SCRATCH    
-```
+Checkout the nice instructions on using Peakachu [here](https://github.com/tariks/peakachu)
+
+    # Start a job on slurm
+    srun -p shortterm -c 4 -mem 20GB --pty bash 
+    ### peakachu version 1
+    snakemake -s peakachu.smk peakachu_v1 --cores $n --use-conda --config SCRATCH=$SCRATCH
+    ### peakachu version 2
+    snakemake -s peakachu.smk peakachu_v2 --cores $n --use-conda --config SCRATCH=$SCRATCH    
 Peakachu offers scripts to identify differential chromatin loops between samples.
 In the configuration peakachu.yml one has to select a pool threshold. The best threshold may vary between samples. 
 For best results try multiple and select the ones best working for each sample.
