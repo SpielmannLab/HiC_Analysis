@@ -9,7 +9,8 @@ os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 
 result_dir=config['OUTDIR']
 
-SAMPLES=config['SAMPLES_ctrl'] + config['SAMPLES_exp1']
+SAMPLES = config['SAMPLES']
+SAMPLES_diff = config['SAMPLES_ctrl'] + config['SAMPLES_exp1']
 
 rule peakachu_v2:
 	input:
