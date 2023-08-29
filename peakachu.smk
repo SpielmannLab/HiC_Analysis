@@ -11,11 +11,11 @@ result_dir=config['OUTDIR']
 
 SAMPLES=config['SAMPLES_ctrl'] + config['SAMPLES_exp1']
 
-rule peakachu_v1:
+rule peakachu_v2:
 	input:
 		expand("%s/{sample}/peakachu_v2/loops/%s/{sample}_%s.loops"%(result_dir, config['PEAKACHU_MODEL'], config['MIN_CONFIDENCE']), sample=SAMPLES)
 
-rule peakachu_v2:
+rule peakachu_v1:
 	input: 
 		expand("%s/{sample}/peakachu_v1/loops/merged/{sample}_%s.loops"%(result_dir, config['MIN_CONFIDENCE']), sample=SAMPLES)
 
