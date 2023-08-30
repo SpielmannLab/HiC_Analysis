@@ -14,4 +14,4 @@ source $WORK/.omics/anaconda3/etc/profile.d/conda.sh # some reason conda command
 cat peakachu.yml
 
 # Run peakachu version 2
-snakemake -s peakachu.smk peakachu_v2 --cores 3 --use-conda --config SCRATCH=$SCRATCH --conda-prefix "$WORK/hic_conda_envs" --conda-frontend "mamba"
+snakemake -s peakachu.smk peakachu_v2 --cores 3 --use-conda --config SCRATCH=$SCRATCH --conda-prefix "$WORK/hic_conda_envs/" --conda-frontend "mamba"
