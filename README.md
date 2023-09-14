@@ -37,6 +37,10 @@ The Juicer scripts create .hic files and also offer scaffolding. Scaffolding is 
 ## HiC-Pro
 For Alignment the pipeline starts HiC-Pro in parallel mode on a SLURM cluster.
 Please install HiC-Pro by following the [instructions](https://github.com/nservant/HiC-Pro). The path to the installation directory in required in the configuration file.
+
+The rulegraph of hicpro.smk is below:
+![Rulegraph of hicpro.smk](hicpro_rules.png)
+
 ```bash
 ### when run in separate steps use permanent work directory
 snakemake -s hicpro.smk hicpro_parallel_step1 --cores $n --use-conda
