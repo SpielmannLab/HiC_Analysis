@@ -20,23 +20,15 @@ process perform_arrowhead {
         tuple val(juicer_name), path(juicer_path)
     output:
         tuple val(meta), path("**.bedpe"), emit: arrowhead_out, optional: true
+        path("output.log")
     shell:
     '''
     if [[ !{params.chromosome} = "null" ]]; then
-        java -jar !{juicer_path} arrowhead \
-             -k !{params.normalization} \
-             -r !{params.hic_resolution} \
-             -k !{hic_file} \
-             --threads 0 \
-             ./
+        java -jar !{juicer_path} arrowhead -m !{params.sliding_window_size} -k !{params.normalization} -r !{params.hic_resolution} !{hic_file} --threads 0 ./ | tee output.log
     else
-        java -jar !{juicer_path} arrowhead \
-             -k !{params.normalization} \
-             -r !{params.hic_resolution} \
-             -c !{params.chromosome} \
-             -k !{hic_file} \
-             --threads 0 \
-             ./
+        java -jar !{juicer_path} arrowhead -m !{params.sliding_window_size} -k !{params.normalization} -r !{params.hic_resolution} -c !{params.chromosome} !{hic_file} --threads 0 ./ | tee output.log
     fi
+    # see the output
+    tree 
     '''
 }
