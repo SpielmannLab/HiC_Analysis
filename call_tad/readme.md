@@ -34,7 +34,7 @@ The online TAD caller by Higgins et al requires data in a particular format. And
 
 ## Usage
 
-Fill out the information in the [parameters file](call_tad/call_tad_params.yaml) and submit the following script from OMICS headnode:
+Fill out the information in the [parameters file](./call_tad_params.yaml) and submit the following script from OMICS headnode:
 
     sbatch call_tad_sbatch.sh
 
