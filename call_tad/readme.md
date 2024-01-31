@@ -14,19 +14,19 @@ PCA grouping in Figure 4f of Zufferey et al. Ordered based on further assessment
 
 Group 1:
 
-1. Arrowhead (need high resolution, best at 10kb resolution)
-2. Insulation Score (FANC)?
+1. Arrowhead (need high resolution, best at 10kb resolution) [x]
+2. Insulation Score (FANC)? [ ]
 
 Group 2:
 
-1. TopDom
-2. CHDF (need high resolution)
-3. CaTCH
-4. HiCseg
+1. TopDom [ ]
+2. CHDF (need high resolution) [ ]
+3. CaTCH [ ]
+4. HiCseg [ ]
 
-Not assessed?:
+Not assessed by the authors?:
 
-- HiTAD
+- HiTAD [ ]
 
 ### TODO
 
