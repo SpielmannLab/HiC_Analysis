@@ -1,0 +1,64 @@
+# Define paramteres to run the fastq2HiC pipeline
+# Provide a sample name and the glob pattern to retreive fastq files. Currenty does not support multiple
+input_fastqfiles:
+  - 
+    samplename: B1C30
+    fastq_files: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/fastq/*21Sep35-DL004*.fastq.gz
+  - 
+    samplename: B1C34
+    fastq_files: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/fastq/*21Sep35-DL005*.fastq.gz
+
+# Downsample the fastq files for testing
+downsample: false # <true/false>
+downsample_to:  # Only required if downsample is set to true
+
+# Three genome reference related files are needed.
+# Typically downloaded from iGenomes (https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html)
+# If the two indices not available, leave them blank and include the "prepare_reference" subworkflow in the main workflow
+genome_reference:
+  name: hg38 # Name of the reference
+  fa_file: /data/humangen_external/reference/iGenomes/Homo_sapiens/UCSC/hg38/Sequence/WholeGenomeFasta/genome.fa # The unzipped fasta file (containing the sequence)
+  fa_fai_file: /data/humangen_external/reference/iGenomes/Homo_sapiens/UCSC/hg38/Sequence/WholeGenomeFasta/genome.fa.fai # The unzipped fasta file (containing the sequence)
+  bowtie2index: /data/humangen_external/reference/iGenomes/Homo_sapiens/UCSC/hg38/Sequence/Bowtie2Index
+
+# For in silico digestion of the reference genome, provide restriction site and ligation site for read-trimming
+# Either the site: A^AGCTT or the name (currently only hindiii, dpnii, bgiii, mboi)
+restriction_site_or_enzyme: '^GATC' #corresponding to DpnII
+ligation_site: GATCGATC
+
+# Path to tools
+# Provide the path to the hicpro installation directory
+hicpro_path: /data/humangen_external/HiC/installation/HiC-Pro
+# Provide a path to the jar file of juicer
+# juicer_path: 
+# juicer_path:   # recommended version. Peakachu does not work. hiccups works. hiccupsdiff does not work
+juicer_path: 
+  # suggested in https://github.com/aidenlab/juicer/issues/312 to be the solution
+  # peakachu works with and without --balance option. But this misses some peaks
+  # HICCUPS works. Just look out for norm options -k
+  - 
+    name: juicer_1.19.02
+    path: /data/humangen_external/HiC/installation/Juicer/juicer_tools_1.19.02.jar 
+  # peakachu works.
+  # peakachu with balance not tested yet
+  # HICCUPS not tested.
+  - 
+    name: juicer_1.22.01
+    path: /data/humangen_external/HiC/installation/Juicer/juicer_tools_1.22.01.jar 
+  # Newest version as of 15th Nov 2023. 
+  # Peakachu does not work on the hic file. But can be converted to mcool using HiCLift package if needed
+  # HICCUPS and HICCUPSdiff works. Just be careful about the -k normalization option
+  - 
+    name: juicer_2.20.00
+    path: /data/humangen_external/HiC/installation/Juicer/juicer_tools.2.20.00.jar
+
+# A place to store a lot of temporary files.
+temporary_path: "/work/sreenivasan/hic_nextflow_workdir/" # This needs to be any directory that is accessible from all nodes. That is not $SCRATCH
+outdir: "/data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.14_fastq2HiC"
+
+##### ------ For starting from allValidPairs file in case the process "allValidPairs_to_juicertools_hic" failed.
+##### If doing this, makes sure you add the option "-entry from_allValidPairs" for the nextflow run
+#input_allvalidpairsfile:
+#- 
+#samplename: 
+#allvalidpairs_file: 

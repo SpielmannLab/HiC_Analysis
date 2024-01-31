@@ -1,0 +1,89 @@
+
+# Define input juicebox *.hic files for loop calling using peakachu. 
+  # - 
+  #   samplename: Name of the sample
+  #   hic_file: (juicer format from hic_format output of hicpro analysis in HiC_Analysis)
+  #   peakachu_model_file: pickled peakachu model file. Choose depth based on peakachu_depth
+  #   loop_threshold: (for filtering loops). Loop threshold of 0.97 seems to work really well.
+  #
+samples:
+  - 
+    samplename: B2C20
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH_wt_reanalysis/2023.12_fastq2HiC/B2C20/juicer_1.19.02/B2C20.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.30million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: CelllineSophie
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH_wt_reanalysis/2023.12_fastq2HiC/CelllineSophie/juicer_1.19.02/CelllineSophie.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.100million.10kb.w6.pkl
+    loop_threshold: 0.97
+
+hic_resolution: 10000 # which hic-resolution to be used for loop calling
+
+# Annotate the pooled loops (i.e., not loop pixes, but the merged loops) and unique loops with gene names.
+# As of 24th Nov 2023, annotation of pooled loops not done. Only unique loops are annotated
+gene_annotation_bedfile: /data/humangen_external/reference/organisms/human/Genes_BED/genes_hg38.bedpe
+
+outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/
+
+
+# ----- Samples processed in the past, stored here for record-keeping ------ #
+# 1. IDH1_clones_treated_and_stromal
+samples_past_archived:
+  - 
+    samplename: B1C34
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.14_fastq2HiC/B1C34/juicer_1.19.02/B1C34.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.30million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: B1C30
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.14_fastq2HiC/B1C30/juicer_1.19.02/B1C30.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.30million.10kb.w6.pkl
+    loop_threshold: 0.97
+
+  - 
+    samplename: DNMT3Amut55
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.10_fastq2HiC/juicer_1.19.02/DNMT3Amut55.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.400million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: DNMT3Amut71
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.10_fastq2HiC/juicer_1.19.02/DNMT3Amut71.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.300million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: DNMT3AwtC13
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.10_fastq2HiC/juicer_1.19.02/DNMT3Awtc13.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.300million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: DNMT3AwtC2
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.10_fastq2HiC/juicer_1.19.02/DNMT3Awtc2.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.350million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: B1C30_10-IVO_5d
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_fastq2HiC/B1C30_10-IVO_5d/juicer_1.19.02/B1C30_10-IVO_5d.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.50million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: B1C34_10-IVO_5d
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_fastq2HiC/B1C34_10-IVO_5d/juicer_1.19.02/B1C34_10-IVO_5d.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.100million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: B2C17_10-IVO_5d
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_fastq2HiC/B2C17_10-IVO_5d/juicer_1.19.02/B2C17_10-IVO_5d.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.100million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: HS5_2HG
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_fastq2HiC/HS5_2HG/juicer_1.19.02/HS5_2HG.allValidPairs.hic 
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.100million.10kb.w6.pkl
+    loop_threshold: 0.97
+  - 
+    samplename: HS5_ctrl
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_fastq2HiC/HS5_ctrl/juicer_1.19.02/HS5_ctrl.allValidPairs.hic
+    peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.100million.10kb.w6.pkl
+    loop_threshold: 0.97
+outdir_past_archived: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/

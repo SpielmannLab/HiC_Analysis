@@ -1,0 +1,36 @@
+OUTDIR: "results/peakachu"
+REFERENCE: "hg38"
+REFERENCE_FILE: "/data/humangen_external/reference/organisms/human/hg38/hg38.fa"
+HICPRO_INDIR: "results/hicpro"
+
+# Samples for Peakachu
+SAMPLES:
+  # - DNMT3Amut55 # use 350M reads model
+  - DNMT3Amut71 # use 300M reads model
+  - DNMT3AwtC2 # use 300M reads model
+  - DNMT3AwtC13 # use 300M reads model
+
+# Sample definition for diff_peakachu
+SAMPLES_exp1: # control experiment
+  - DNMT3Amut55
+SAMPLES_ctrl:
+  - DNMT3Amut71
+
+### target resolution 
+RESOLUTION: 10000
+SCRATCH: "work"
+
+JUICER: "/data/$USER/software/juicer_tools_1.22.01.jar"
+
+MIN_CONFIDENCE: ".9" ### min confidence for peakachu scores
+
+### example peakachu v1
+### needs both down1.h3k27ac.pkl und down1.ctcf.pkl
+#PEAKACHU_MODEL: "peakachu-models/down1." 
+
+### example peakachu v2
+PEAKACHU_MODEL: "results/peakachu/picked_models/high-confidence.300million.10kb.w6.pkl"
+# PEAKACHU_MODEL: "results/peakachu/picked_models/high-confidence.350million.10kb.w6.pkl"
+
+### gene list for peakachu diff loop annotation
+GENELIST: # "example/genes_hg19.bedpe"

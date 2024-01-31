@@ -1,0 +1,25 @@
+Most important thing is to keep track of normalizations when running hiccups. 
+
+    # For *.hic files created using 1.19.02 with restriction fragements:
+    # Hiccups normalization options:
+    # -k NONE does not work
+    # -k VC,SCALE,VC_SQRT, KR works
+    # Not specifying -k option also works
+    It looks like pre default is: VC,VC_SQRT,KR,SCALE. So, this makes sense
+
+    # For *.hic files created using 1.19.02 without restriction fragements:
+    # -k NONE does not work
+    # -k VC,SCALE,VC_SQRT, KR works
+    # Not specifying -k option also works
+    It looks like pre default is: VC,VC_SQRT,KR,SCALE. So, this makes sense
+
+    # For *.hic files created using 2.20.00 without restriction fragements:
+    -k KR does not work
+    -k VC,VC_SQRT,NONE,SCALE works
+    # Not specifying -k option also works
+
+
+    # When running hiccupsdiff, make sure that the exact same normalization option is used!
+
+
+
