@@ -4,7 +4,7 @@
 #SBATCH -c 3
 #SBATCH --mem=200GB
 #SBATCH --mail-type=END
-#SBATCH --job-name=hicpro
+#SBATCH --job-name=peakachu
 ##SBATCH --tmp=40GB
 
 
