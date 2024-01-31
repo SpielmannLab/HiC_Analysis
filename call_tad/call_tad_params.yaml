@@ -1,0 +1,24 @@
+###################
+# Global settings #
+###################
+samples:
+  - samplename: DNMT3Amut71
+    hic_file: /data/humangen_external/test_area/varun/arrowhead/DNMT3Amut71.allValidPairs.hic
+outdir: /data/humangen_external/test_area/varun/arrowhead/nextflow_out/
+######################
+# arrowhead settings #
+######################
+# IMPORTANT: Arrowhead works only when you have at least 300M reads in the HiC file
+# This kind of equates to about 1000 reads per bin at 10k resolution (bin size)
+do_arrowhead: true # true | false
+chromosome: 20 # Optional. Comma separated. Eg. chr1,chr2,3,X. Leave empty to perform arrowhead on all chromosomes
+sliding_window_size: 2000 # Slice of sliding window along diagonal. Must be an even number. Default is 2000
+hic_resolution: 10000 # Which resolution to perform arrowhead on. Recommended 5000 or 10000
+# Normalization is very version dependent.
+# For juice_2.20.00 available options are <NONE,SCALE,VC,VC_SQRT>. NOTE: KR is not available. Use SCALE instead
+normalization: SCALE
+juicer_path:
+  # This is the name of the package that arrowhead is a part of. By Aiden lab
+  # Make sure to use the version that matches the version of the hic file output by fastq2HiC
+  name: juicer_2.20.00
+  path: /data/humangen_external/HiC/installation/Juicer/juicer_tools.2.20.00.jar
