@@ -10,7 +10,7 @@ Here are some important resources and papers that deal with TAD and boundary det
 
 Based on the comparison bapser by Zufferey et al, we should implement the following tools:
 
-PCA grouping in Figure 4f of Zufferey et al. Ordered based on further assessments. These tools will be pretty comprehensive:
+PCA grouping in Figure 4f of Zufferey et al. Ordered based on further assessments is below. The goal is to implement all of these. [x] mark shows the implemented ones.
 
 Group 1:
 
@@ -31,3 +31,13 @@ Not assessed by the authors?:
 ### TODO
 
 The online TAD caller by Higgins et al requires data in a particular format. And is quite restrictive when uploading HiC files (500MB limit). Need to generate a pipeline to export hic files to mcool format etc. Eg using HiCLift
+
+## Usage
+
+Fill out the information in the [parameters file](call_tad/call_tad_params.yaml) and submit the following script from OMICS headnode:
+
+    sbatch call_tad_sbatch.sh
+
+or, if you want to resume a previous job, then:
+
+    sbatch call_tad_sbatch.sh -resume
