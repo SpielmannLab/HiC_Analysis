@@ -158,9 +158,9 @@ unique1, unique2, model = work_core(
     folds, fold1, fold2, union, loop_pool_1, loop_pool_2, thre=thre
 )
 for i in range(repeat):
-    u1, u2 = work_core(folds, fold1, fold2, union, loop_pool_1, loop_pool_2, thre=thre)[
-        :2
-    ]
+    u1, u2 = work_core(folds, fold1, fold2,
+                       union, loop_pool_1, loop_pool_2,
+                       thre=thre)[:2]
     unique1 = unique1 & u1
     unique2 = unique2 & u2
     if (not len(unique1)) and (not len(unique2)):
@@ -177,7 +177,21 @@ outfil1 = (
     + sys.argv[1].replace("_merged.loops", ".unique.loops")
 )
 with open(outfil1, "w") as out:
-    out.write("\t".join(["#chr1", "x1", "x2", "chr2", "y1", "y2", "score_this_group", "score_other_group"]) + "\n")
+    out.write(
+        "\t".join(
+            [
+                "#chr1",
+                "x1",
+                "x2",
+                "chr2",
+                "y1",
+                "y2",
+                "score_this_group",
+                "score_other_group",
+            ]
+        )
+        + "\n"
+    )
     for line in unique1:
         tmp_loop = list(map(str, line))
         tmp_prob = list(map(str, loop_dict[line]))
@@ -189,7 +203,21 @@ outfil2 = (
     + sys.argv[2].replace("_merged.loops", ".unique.loops")
 )
 with open(outfil2, "w") as out:
-    out.write("\t".join(["#chr1", "x1", "x2", "chr2", "y1", "y2", "score_this_group", "score_other_group"]) + "\n")
+    out.write(
+        "\t".join(
+            [
+                "#chr1",
+                "x1",
+                "x2",
+                "chr2",
+                "y1",
+                "y2",
+                "score_this_group",
+                "score_other_group",
+            ]
+        )
+        + "\n"
+    )
     for line in unique2:
         tmp_loop = list(map(str, line))
         tmp_prob = list(map(str, loop_dict[line]))
@@ -216,6 +244,7 @@ ax.set_ylabel("Density", fontsize=18)
 
 # plt.show()
 plt.savefig(
-    sys.argv[3].split(".")[0] + "." + "Fold-GMM.png", dpi=200, bbox_inches="tight"
+    sys.argv[3].split(".")[0] + "." + "Fold-GMM.png",
+    dpi=200, bbox_inches="tight"
 )
 plt.close()
