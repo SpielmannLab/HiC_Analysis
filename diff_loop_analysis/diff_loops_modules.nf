@@ -39,6 +39,7 @@ process do_diffpeakachu {
         tuple val(meta_unfiltered_1), path("group1_unfiltered_??.loops")
         tuple val(meta_unfiltered_2), path("group2_unfiltered_??.loops")
     output:
+        path "${meta_filtered_merged_1.groupname}-${meta_filtered_merged_2.groupname}.merged.loops"
         tuple val(meta_filtered_merged_1), path("*${meta_filtered_merged_1.groupname}.unique.loops"), emit: unique_loops1
         tuple val(meta_filtered_merged_2), path("*${meta_filtered_merged_2.groupname}.unique.loops"), emit: unique_loops2
         path "*.png"
