@@ -69,8 +69,8 @@ process annotate_loops {
         path("overlapping_genes_in*")
     shell:
         '''
-        cat !{loops} | awk 'BEGIN { OFS="\t" } {print $1, $2, $3}' > !{loops}_pe1.bed
-        cat !{loops} | awk 'BEGIN { OFS="\t" } {print $4, $5, $6}' > !{loops}_pe2.bed
+        cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {print $1, $2, $3, $7, $8}' > !{loops}_pe1.bed
+        cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {print $4, $5, $6, $7, $8}' > !{loops}_pe2.bed
         bedtools intersect -wa -wb -a genes.bed -b !{loops}_pe1.bed !{loops}_pe2.bed > overlapping_genes_in_!{loops}
         '''
 }
