@@ -38,6 +38,16 @@ Created peakachu env using installation instructions at their [github page](http
        └── WT_merged_forIGV.bedpe
    ```
 
+   In the Group1-Group2.Group**1(2)**.unique.loops file, there will be 8 column:
+   Column 1: chr1 - Chromosome of left side of the loop
+   Column 2: x1 - Left of the bin for the left side of the loop
+   Column 3: x2 - Right of the bin for the left side of the loop
+   Column 4: chr2 - Chromosome of right side of the loop
+   Column 2: y1 - Left of the bin for the right side of the loop
+   Column 3: y2 - Right of the bin for the right side of the loop
+   Column 7: score_this_group - The peakachu score of this loop for the Group**1(2)**
+   Column 8: score_other_group - The peakachu score of this loop for the Group**2(1)**
+
 5. The next step is to run Aggregate Peak Analysis
 
    TODO
