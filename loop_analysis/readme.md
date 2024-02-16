@@ -26,7 +26,6 @@ First fill out the [call_loops_params.yaml](Steinhaeser_HiC_analysis/loop_analys
     ```bash
     sbatch call_loops_core.sh
     ```
-
 5. Run diffpeakachu
    This is being done using new NextFlow script [here](/peakachu/nextflow_scripts/).
 
