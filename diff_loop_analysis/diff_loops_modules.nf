@@ -69,8 +69,14 @@ process annotate_loops {
         path("overlapping_genes_in*")
     shell:
         '''
-        cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {print $1, $2, $3, $7, $8}' > !{loops}_pe1.bed
-        cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {print $4, $5, $6, $7, $8}' > !{loops}_pe2.bed
-        bedtools intersect -wa -wb -a genes.bed -b !{loops}_pe1.bed !{loops}_pe2.bed > overlapping_genes_in_!{loops}
+        # To overlap the 5' anchor with genes.bed
+        cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {print $0}' > pe1.bed
+        bedtools intersect -wa -wb -a pe1.bed -b genes.bed | awk 'BEGIN { OFS="\t" } {print $0,"5p anchor" }' > pe1_with_genes.bed
+        # To overlap the 3' anchor with genes.bed firs rearrange and then put back
+        cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {chrx=$1; startx=$2; endx=$3; chry=$4; starty=$5; endy=$6; $1=chry; $2=starty; $3=endy; $4=chrx; $5=startx; $6=endx; print $0}' > pe2.bed
+        bedtools intersect -wa -wb -a pe2.bed -b genes.bed | awk 'BEGIN { OFS="\t" } {chry=$1; starty=$2; endy=$3; chrx=$4; startx=$5; endx=$6; $1=chrx; $2=startx; $3=endx; $4=chry; $5=starty; $6=endy; print $0,"3p anchor"}' > pe2_with_genes.bed
+        # combine the two and sort
+        cat pe1_with_genes.bed pe2_with_genes.bed > pe1_pe2_with_genes.bed
+        bedtools sort -i pe1_pe2_with_genes.bed > overlapping_genes_in_!{loops}
         '''
 }
