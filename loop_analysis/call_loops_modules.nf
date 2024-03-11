@@ -20,7 +20,6 @@ This process is not in the main nextflow pipeline. Needs to be custom integrated
 // First score peaks across the genome
 process peakachu_score_genome {
     tag "${sample_name}"
-    debug true
     input:
         tuple val(sample_name), path(path_hic), path(peakachu_model), val(threshold)
 	output:
@@ -31,7 +30,7 @@ process peakachu_score_genome {
         hicfile=!{path_hic} # conversion of nextflow variable to bash variable to enable substitution
         # the balance option uses ICE/KR-balanced matrix. But for whatever reason, this does not work 
         # peakachu score_genome --balance --minimum-prob 0 -p ${hicfile} -r !{params.hic_resolution} -O !{sample_name}_unfiltered.loops -m !{peakachu_model}
-        peakachu score_genome --minimum-prob 0 -p ${hicfile} -r !{params.hic_resolution} -O !{sample_name}_unfiltered.loops -m !{peakachu_model}
+        peakachu score_genome --minimum-prob 0 -p ${hicfile} -r !{params.hic_resolution} -l !{params.min_anchor_distance} -u !{params.max_anchor_distance} -O !{sample_name}_unfiltered.loops -m !{peakachu_model}
         '''
 }
 

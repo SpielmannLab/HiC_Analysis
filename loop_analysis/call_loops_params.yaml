@@ -14,5 +14,8 @@ samples:
     hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH_wt_reanalysis/2023.12_fastq2HiC/CelllineSophie/juicer_1.19.02/CelllineSophie.allValidPairs.hic
     peakachu_model_file: /data/humangen_external/HiC/installation/peakachu/pickled_models/high-confidence.100million.10kb.w6.pkl
     loop_threshold: 0.97
+# Setting parameters for peakachu
+min_anchor_distance: 6 # Lower bound of distance between loci in bins (default 6). Peakachu setting
+max_anchor_distance: 300 # Upper bound of distance between loci in bins (default 300). Peakachu setting
 hic_resolution: 10000 # which hic-resolution to be used for loop calling
 outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/
