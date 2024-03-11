@@ -159,7 +159,6 @@ process hic_pro_in_parallel_mode {
 
 process allValidPairs_to_juicertools_hic {
     tag "${samplename}_${juicername}"
-    debug true
     // create hic file from *.allValidPairs file created by HiC-Pro
     publishDir "${params.outdir}/${samplename}/${juicername}", mode: 'copy'
     input:
