@@ -4,6 +4,7 @@
 #SBATCH --partition=shortterm
 #SBATCH --nodes=1
 #SBATCH -c 1
+#SBATCH -J "diff_loops"
 #SBATCH --mem=10GB
 #set slurm file output nomenclature
 #SBATCH --output "slurm-%x-%j.out"
