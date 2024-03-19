@@ -100,3 +100,7 @@ archive_group2:
     filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.12_loop_analysis/B1C34_filtered.loops
 archive_outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2024.01_diff_loop_analysis/IDH1-Treated_vs_IDH1-Mutant-Untreated/
 # IDH1-mutant-treated. Comparision 3. IDH1-WT vs IDH1-Mutant-Untreated
+# Annotate the pooled loops (i.e., not loop pixes, but the merged loops) and unique loops with gene and promoters.
+gene_annotation_bedfile: /data/humangen_external/reference/ucsc_table_browser/Homo_sapiens/GRCh38_GENCODEV44_knownGene_with_strandinfo.bed
+# Provide genome sizes file for using bedtools flank and slop to get promoters from genes.bed file
+genome_fa_fai_file: /data/humangen_external/reference/iGenomes/Homo_sapiens/UCSC/hg38/Sequence/WholeGenomeFasta/genome.fa.fai # The unzipped fasta file (containing the sequence)

@@ -59,10 +59,10 @@ workflow {
 
   
   // Annotate the loops and extract the unique genes in each of the two groups
-  annotate_unique_loops1(do_diffpeakachu.out.unique_loops1, params.gene_annotation_bedfile)
-  annotate_unique_loops2(do_diffpeakachu.out.unique_loops2, params.gene_annotation_bedfile)
-  annotate_merged_loops1(get_union_of_group1_loops.out.loop_format, params.gene_annotation_bedfile)
-  annotate_merged_loops2(get_union_of_group2_loops.out.loop_format, params.gene_annotation_bedfile)
+  annotate_unique_loops1(do_diffpeakachu.out.unique_loops1, params.gene_annotation_bedfile, params.genome_fa_fai_file)
+  annotate_unique_loops2(do_diffpeakachu.out.unique_loops2, params.gene_annotation_bedfile, params.genome_fa_fai_file)
+  annotate_merged_loops1(get_union_of_group1_loops.out.loop_format, params.gene_annotation_bedfile, params.genome_fa_fai_file)
+  annotate_merged_loops2(get_union_of_group2_loops.out.loop_format, params.gene_annotation_bedfile, params.genome_fa_fai_file)
   /*
    */
 }

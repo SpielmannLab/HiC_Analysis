@@ -65,18 +65,45 @@ process annotate_loops {
 	  input:
         tuple val(meta), path(loops)
         path "genes.bed"
+        path "genome.fa.fai"
     output:
-        path("overlapping_genes_in*")
+        path("genes_in_loops*")
+        path("promoters_in_loops*")
     shell:
         '''
+        #### GENE based annotation
+        ## Genes overlapping with the loop anchors
         # To overlap the 5' anchor with genes.bed
         cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {print $0}' > pe1.bed
         bedtools intersect -wa -wb -a pe1.bed -b genes.bed | awk 'BEGIN { OFS="\t" } {print $0,"5p anchor" }' > pe1_with_genes.bed
         # To overlap the 3' anchor with genes.bed firs rearrange and then put back
         cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } {chrx=$1; startx=$2; endx=$3; chry=$4; starty=$5; endy=$6; $1=chry; $2=starty; $3=endy; $4=chrx; $5=startx; $6=endx; print $0}' > pe2.bed
         bedtools intersect -wa -wb -a pe2.bed -b genes.bed | awk 'BEGIN { OFS="\t" } {chry=$1; starty=$2; endy=$3; chrx=$4; startx=$5; endx=$6; $1=chrx; $2=startx; $3=endx; $4=chry; $5=starty; $6=endy; print $0,"3p anchor"}' > pe2_with_genes.bed
+        ## Genes enclosed by loops
+        # But do this only if the chrx and chry are the same
+        cat !{loops} | grep -v ^# | awk 'BEGIN { OFS="\t" } $1==$4{chrx=$1; startx=$2; endx=$3; chry=$4; starty=$5; endy=$6; $1=chrx; $2=endx; $3=starty; $4=chry; $5=startx; $6=endy; print $0}' > pe3.bed
+        bedtools intersect -wa -wb -a pe3.bed -b genes.bed | awk 'BEGIN { OFS="\t" } {chrx=$1; endx=$2; starty=$3; chry=$4; startx=$5; endy=$6; $1=chrx; $2=startx; $3=endx; $4=chry; $5=starty; $6=endy; print $0,"inside loop"}' > pe3_with_genes.bed
+
+        # combine the three and sort
+        cat pe1_with_genes.bed pe2_with_genes.bed pe3_with_genes.bed > pe1_pe2_pe3_with_genes.bed
+        bedtools sort -i pe1_pe2_pe3_with_genes.bed > genes_in_loops!{loops}
+        
+        #### PROMOTER based annotation
+        ## Define promoters as the 500b upstream and 100b downstream of TSS, but only for genes in main chromosome scaffolds
+        ## Only main scaffolds because the alternate contigs are not matching between genes.bed and genome.sizes
+        bedtools flank -l 500 -r 0 -s -i genes.bed -g genome.fa.fai | bedtools slop -l 0 -r 100 -s -g genome.fa.fai > promoters.bed
+
+        ## Promoters overlapping with loop anchors
+        # To overlap the 5' anchor with promoters.bed
+        bedtools intersect -wa -wb -a pe1.bed -b promoters.bed | awk 'BEGIN { OFS="\t" } {print $0,"5p anchor" }' > pe1_with_promoters.bed
+        # To overlap the 3' anchor with promoters.bed
+        bedtools intersect -wa -wb -a pe2.bed -b promoters.bed | awk 'BEGIN { OFS="\t" } {chry=$1; starty=$2; endy=$3; chrx=$4; startx=$5; endx=$6; $1=chrx; $2=startx; $3=endx; $4=chry; $5=starty; $6=endy; print $0,"3p anchor"}' > pe2_with_promoters.bed
+        ## promoters enclosed by loops
+        # But do this only if the chrx and chry are the same
+        bedtools intersect -wa -wb -a pe3.bed -b promoters.bed | awk 'BEGIN { OFS="\t" } {chrx=$1; endx=$2; starty=$3; chry=$4; startx=$5; endy=$6; $1=chrx; $2=startx; $3=endx; $4=chry; $5=starty; $6=endy; print $0,"inside loop"}' > pe3_with_promoters.bed
+
         # combine the two and sort
-        cat pe1_with_genes.bed pe2_with_genes.bed > pe1_pe2_with_genes.bed
-        bedtools sort -i pe1_pe2_with_genes.bed > overlapping_genes_in_!{loops}
+        cat pe1_with_promoters.bed pe2_with_promoters.bed pe3_with_promoters.bed > pe1_pe2_pe3_with_promoters.bed
+        bedtools sort -i pe1_pe2_pe3_with_promoters.bed > promoters_in_loops!{loops}
         '''
 }
