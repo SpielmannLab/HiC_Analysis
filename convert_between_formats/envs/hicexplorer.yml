@@ -1,0 +1,7 @@
+name: hicexplorer
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - hicexplorer=3.7.2
