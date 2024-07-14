@@ -1,6 +1,6 @@
 #! /bin/bash
 
-### Submit this Script with: sbatch <peakachu_core.sh> ###
+### Submit this Script with: sbatch <call_tad_sbatch.sh> ###
 #SBATCH --partition=shortterm
 #SBATCH --nodes=1
 #SBATCH -c 1
@@ -13,9 +13,9 @@
 module load nextflow/v22.04.1
 
 # copy the scrits to $WORK directory - otherwise there is a jav aerror
-mkdir -p "${WORK}/call_tad_nextflow_launchdir"
-rsync -r --update * "${WORK}/call_tad_nextflow_launchdir"
-cd "${WORK}/call_tad_nextflow_launchdir"
+mkdir -p "$WORK/call_tad_nextflow_launchdir"
+rsync -r --update * "$WORK/call_tad_nextflow_launchdir/"
+cd "$WORK/call_tad_nextflow_launchdir"
 rm slurm*.out
 
 # if -resume option not present, then clean the nextflow
@@ -30,4 +30,4 @@ else
 fi
 
 # Submit the Nextflow Script:
-nextflow run call_tad_main.nf -params-file call_tad_params.yaml -resume
+nextflow run call_tad_main.nf -params-file call_tad_params.yaml -resume -ansi-log false -with-trace

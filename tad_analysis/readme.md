@@ -14,8 +14,8 @@ PCA grouping in Figure 4f of Zufferey et al. Ordered based on further assessment
 
 Group 1:
 
-1. Arrowhead (need high resolution, best at 10kb resolution) [x]
-2. Insulation Score (FANC)? [ ]
+1. [Arrowhead](https://github.com/aidenlab/juicer/wiki/Arrowhead#defaults) (need high resolution, best at 10kb resolution) [x]
+2. Insulation Score (implementation using [FANC](https://fan-c.readthedocs.io/en/latest/fanc-executable/fanc-analyse-hic/domains.html))? [ ]
 
 Group 2:
 
@@ -34,6 +34,7 @@ The online TAD caller by Higgins et al requires data in a particular format. And
 
 ## Usage
 
+You can also use juicer_tools validate command to check which normalizations are present
 Fill out the information in the [parameters file](./call_tad_params.yaml) and submit the following script from OMICS headnode:
 
     sbatch call_tad_sbatch.sh
@@ -41,3 +42,7 @@ Fill out the information in the [parameters file](./call_tad_params.yaml) and su
 or, if you want to resume a previous job, then:
 
     sbatch call_tad_sbatch.sh -resume
+
+The output for each of the implemented algorithms will be found at the `outdir/<algorithm>/`. Please also check the log file.
+
+## Notes

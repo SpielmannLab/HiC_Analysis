@@ -1,0 +1,44 @@
+###################
+# Global settings #
+###################
+# Differential tad will be calculated with group1 as control
+samples:
+  - samplename: GFI136N_WT_KI
+    group: group1
+    hic_file: /data/humangen_external/HiC/khandanpour_hic/data_n_results/2024.01_fastq2HiC/GFI136N_WT_KI/juicer_2.20.00/GFI136N_WT_KI.allValidPairs.hic
+  - samplename: GFI136S_KI_KI
+    group: group2
+    hic_file: /data/humangen_external/HiC/khandanpour_hic/data_n_results/2024.01_fastq2HiC/GFI136S_KI_KI/juicer_2.20.00/GFI136S_KI_KI.allValidPairs.hic
+
+outdir: /data/humangen_external/HiC/khandanpour_hic/data_n_results/2024.07_tad_analysis/
+#
+######################
+# arrowhead settings #
+######################
+# IMPORTANT: Arrowhead works only when you have at least 300M reads in the HiC file
+# This kind of equates to about 1000 reads per bin at 10k resolution (bin size)
+chromosome: # 14 # Optional. Comma separated. Eg. chr1,chr2,3,X. Leave empty to perform arrowhead on all chromosomes
+sliding_window_size: 2000 # Slice of sliding window along diagonal. Must be an even number. Default is 2000
+hic_resolution: 10000 # Which resolution to perform arrowhead on. Recommended 5000 or 10000
+# Normalization is very version dependent.
+# For hic files from juicer_2.20.00 available options are <NONE,SCALE,VC,VC_SQRT>. NOTE: KR is not available. Use SCALE instead
+# You can also use juicer_tools validate command to check which normalizations are present
+normalization: SCALE
+juicer_path:
+  # This is the name of the package that arrowhead is a part of. By Aiden lab
+  # Make sure to use the version that matches the version of the hic file output by fastq2HiC
+  name: juicer_2.20.00
+  path: /data/humangen_external/HiC/installation/Juicer/juicer_tools.2.20.00.jar
+
+######################
+# diffDomain settings #
+######################
+diffDomain_path:
+  # This is the path to diffDomain, within which you can see the python scripts
+  name: diffDomain-py3
+  path: /data/humangen_external/HiC/installation/diffDomain/diffdomain-py3
+
+#############################
+# insulation score settings #
+#############################
+# THIS is implemented using the FANC wrapper

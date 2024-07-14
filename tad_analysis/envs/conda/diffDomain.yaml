@@ -1,0 +1,20 @@
+name: diffDomain
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - pip
+  - cooler
+  - numba
+  - matplotlib
+  - python>3.7.11
+  - bx-python
+  - hic-straw=1.3.1
+  - gffutils
+  - argh
+  - docopt
+  - tracywidom==0.3.0
+  - seaborn
+  - pip:
+      - diffdomain-py3==0.2.1
