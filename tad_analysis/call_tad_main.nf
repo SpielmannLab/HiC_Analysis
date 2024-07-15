@@ -1,7 +1,7 @@
 // **** Load modules ****
 include { write_params } from "./call_tad_modules.nf"
 include { perform_arrowhead } from "./call_tad_modules.nf"
-include { perform_diffDomain } from "./call_tad_modules.nf"
+include { perform_diffDomain as perform_diffDomain_1vs2; perform_diffDomain as perform_diffDomain_2vs1 } from "./call_tad_modules.nf"
 include { visualize_diffDomain } from "./call_tad_modules.nf"
 
 /* ------------ WORKFLOW --------------------- */
@@ -27,11 +27,19 @@ workflow {
             | filter { it[0].group == "group2" }
             | view { it -> "Test sample (group2) is ${it[0].samplename}" }
 
-        // pefrom diffDomain
-        perform_diffDomain(group1_channel, group2_channel, params.diffDomain_path)
-        
-        // visualize diffDomains
-        visualize_diffDomain(perform_diffDomain.out, params.diffDomain_path)
+        // perfrom diffDomain
+        // perform comparision Group1 vs Group2
+        perform_diffDomain_1vs2(group1_channel, group2_channel, params.diffDomain_path)
+        // perform comparision Group2 vs Group1
+        perform_diffDomain_2vs1(group2_channel, group1_channel, params.diffDomain_path)
+
+        // visualize diffDomains from both pairwise comparisons. 
+        // Join them into one channel and then run visualization process
+        diffdomains_channel = perform_diffDomain_1vs2.out
+            | mix(perform_diffDomain_2vs1.out)
+            | view
+        visualize_diffDomain(diffdomains_channel, params.diffDomain_path)
+
 
     }
 }
