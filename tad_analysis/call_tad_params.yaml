@@ -1,7 +1,6 @@
 ###################
 # Global settings #
 ###################
-# Differential tad will be calculated with group1 as control
 samples:
   - samplename: GFI136N_WT_KI
     group: group1
@@ -12,6 +11,9 @@ samples:
 
 outdir: /data/humangen_external/HiC/khandanpour_hic/data_n_results/2024.07_tad_analysis/
 #
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+#### #### #### #### #### #### #### #### #### #### TAD CALLING ## #### #### #### #### #### #### #### #### #### #### ####
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 ######################
 # arrowhead settings #
 ######################
@@ -30,6 +32,17 @@ juicer_path:
   name: juicer_2.20.00
   path: /data/humangen_external/HiC/installation/Juicer/juicer_tools.2.20.00.jar
 
+#############################
+# insulation score settings #
+#############################
+# Not implemented yet
+#
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+#### #### #### #### #### #### #### #### #### DIFFERENTIAL ANALYSIS ## #### #### #### #### #### #### #### #### #### ####
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+# NOTE: differential analysis is currently only possible with two samples. One with group1 and the other with group2 #
+do_differential_analysis: true
+#
 ######################
 # diffDomain settings #
 ######################
@@ -37,8 +50,3 @@ diffDomain_path:
   # This is the path to diffDomain, within which you can see the python scripts
   name: diffDomain-py3
   path: /data/humangen_external/HiC/installation/diffDomain/diffdomain-py3
-
-#############################
-# insulation score settings #
-#############################
-# THIS is implemented using the FANC wrapper
