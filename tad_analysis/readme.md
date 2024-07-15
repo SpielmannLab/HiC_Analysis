@@ -1,6 +1,12 @@
-# TAD calling and TAD boundary detection
+# TAD calling and TAD boundary detection and differential TAD analysis
 
-## Literature and conclusions
+TAD calling is implemented using:
+[Arrowhead](https://github.com/aidenlab/juicer/wiki/Arrowhead#defaults)
+
+Differential TAD analyis is implemented using:
+[diffDomain](https://github.com/Tian-Dechao/diffDomain)
+
+## Literature and conclusions on TAD calling and TAD boundary detection
 
 Here are some important resources and papers that deal with TAD and boundary detection.
 
@@ -30,11 +36,21 @@ Not assessed by the authors?:
 
 ### TODO
 
-The online TAD caller by Higgins et al requires data in a particular format. And is quite restrictive when uploading HiC files (500MB limit). Need to generate a pipeline to export hic files to mcool format etc. Eg using HiCLift
+The online TAD caller by Higgins et al requires data in a particular format. And is quite restrictive when uploading HiC files (500MB limit).
+
+## Literature and conclusions on differential TAD analysis
+
+Several tools are availablc:
+
+1. HiCExplorer [ ]
+2. dcHiC [ ]
+3. diffDomain [x]
 
 ## Usage
 
-You can also use juicer_tools validate command to check which normalizations are present
+The nextflow script runs both TAD calling and differential analysis. #TODO add option in params file to avoid differential analysis.
+
+You can also use juicer_tools `validate` command to check which normalizations are present
 Fill out the information in the [parameters file](./call_tad_params.yaml) and submit the following script from OMICS headnode:
 
     sbatch call_tad_sbatch.sh
@@ -44,5 +60,3 @@ or, if you want to resume a previous job, then:
     sbatch call_tad_sbatch.sh -resume
 
 The output for each of the implemented algorithms will be found at the `outdir/<algorithm>/`. Please also check the log file.
-
-## Notes
