@@ -24,9 +24,9 @@ process perform_arrowhead {
     shell:
     '''
     if [[ !{params.chromosome} = "null" ]]; then
-        java -jar !{juicer_path} arrowhead -m !{params.sliding_window_size} -k !{params.normalization} -r !{params.hic_resolution} !{hic_file} arrowhead_tads --threads !{task.cpus} --ignore_sparsity | tee output.log
+        java -jar !{juicer_path} arrowhead --ignore-sparsity -m !{params.sliding_window_size} -k !{params.normalization} -r !{params.hic_resolution} !{hic_file} arrowhead_tads --threads !{task.cpus} | tee output.log
     else
-        java -jar !{juicer_path} arrowhead -m !{params.sliding_window_size} -k !{params.normalization} -r !{params.hic_resolution} -c !{params.chromosome} !{hic_file} arrowhead_tads --threads !{task.cpus} --ignore_sparsity | tee output.log
+        java -jar !{juicer_path} arrowhead --ignore-sparsity -m !{params.sliding_window_size} -k !{params.normalization} -r !{params.hic_resolution} -c !{params.chromosome} !{hic_file} arrowhead_tads --threads !{task.cpus} | tee output.log
     fi
     # see the output
     tree 
