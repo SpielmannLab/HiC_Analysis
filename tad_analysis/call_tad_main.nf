@@ -39,7 +39,5 @@ workflow {
             | mix(perform_diffDomain_2vs1.out)
             | view
         visualize_diffDomain(diffdomains_channel, params.diffDomain_path)
-
-
     }
 }
