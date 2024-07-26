@@ -15,13 +15,13 @@ workflow {
     // add normalization to hic
     Channel.fromList(params.samples)
     | map { it -> 
-            meta = it.subMap('samplename', 'resolution', 'hicexplorer_normalization', 'hicexplorer_correction_method', 'hicexplorer_threshold_low', 'hicexplorer_threshold_high')
+            meta = it.subMap('samplename', 'resolution' )
             [ meta, it.hic_file ] }
     | set { samples }
 
     // Convert to cool format 
     hic_to_cool_raw(samples)
-    // Normalize (0-1) and correct (KR, ICE etc).
-    cool_normalizeNcorrect(hic_to_cool_raw.out.samples)
+    // Normalize (all samples together) and correct (KR, ICE etc).
+    cool_normalizeNcorrect(hic_to_cool_raw.out.cool_files)
 
 }

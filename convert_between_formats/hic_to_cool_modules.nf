@@ -17,26 +17,30 @@ process hic_to_cool_raw {
   input:
     tuple val(meta), path("file.hic")
 	output:
-    tuple val(meta), path("*.cool"), emit: samples
+    path("*.cool"), emit: cool_files
     path("*.out")
 	shell:
     '''
-    hicConvertFormat -m file.hic --inputFormat hic --outputFormat cool -o !{meta.samplename}_!{meta.resolution}.cool --resolution !{meta.resolution} --load_raw_values |& tee !{meta.samplename}_!{meta.resolution}_hicexplorer.out
+    hicConvertFormat -m file.hic --inputFormat hic --outputFormat cool -o !{meta.samplename}_!{meta.resolution}.cool --resolution !{meta.resolution} |& tee !{meta.samplename}_!{meta.resolution}_hicexplorer.out
     '''
 }
 
 process cool_normalizeNcorrect {
-  tag "${meta.samplename}"
   input:
-    tuple val(meta), path("file.cool")
+    path cool_files
 	output:
-    tuple val(meta), path("*.cool"), emit: samples
-    path("*.png")
-    path("*.out")
+    path "*.cool"
+    path "*.png"
+    path "*.out"
 	shell:
     '''
-  hicNormalize --matrices file.cool --normalize !{meta.hicexplorer_normalization} -o !{meta.samplename}_!{meta.resolution}_norm.cool |& tee !{meta.samplename}_!{meta.resolution}_hicNormalize.out
-  hicCorrectMatrix diagnostic_plot -m !{meta.samplename}_!{meta.resolution}_norm.cool -o !{meta.samplename}_!{meta.resolution}_diagnostics.png |& tee !{meta.samplename}_!{meta.resolution}_hicDiagnostics.out
-  hicCorrectMatrix correct --m !{meta.samplename}_!{meta.resolution}_norm.cool -o !{meta.samplename}_!{meta.resolution}_corr.cool --correctionMethod !{meta.hicexplorer_correction_method} --filterThreshold !{meta.hicexplorer_threshold_low} !{meta.hicexplorer_threshold_high} |& tee !{meta.samplename}_!{meta.resolution}_hicCorrect.out
+    in_cool_files=!{cool_files}
+    norm_cool_files=${in_cool_files/.cool/_norm.cool}
+    diagnostic_plot_files=${norm_cool_files/_norm.cool/_diagnostics.png}
+    corr_cool_files=${norm_cool_files/_norm.cool/_corr.cool}
+
+    hicNormalize --matrices ${in_cool_files} --normalize !{params.hicexplorer_normalization} -o ${norm_cool_files} |& tee hicNormalize.out
+    hicCorrectMatrix diagnostic_plot -m ${norm_cool_files} -o ${diagnostic_plot_files} |& tee hicDiagnostics.out
+    hicCorrectMatrix correct -m ${norm_cool_files} -o ${corr_cool_files} --correctionMethod !{params.hicexplorer_correction_method} --filterThreshold !{params.hicexplorer_threshold_low} !{params.hicexplorer_threshold_high} |& tee hicCorrect.out
     '''
 }

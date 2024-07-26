@@ -1,12 +1,18 @@
 # Parameters to convert Juicer HiC to cool format, normalize and correct
 # Takes 20 minutes per sample
 samples:
-  - samplename: DD-mut
-    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2024.03_IDH1_patients/2024.03_fastq2HiC/DD-mut/juicer_1.19.02/DD-mut.allValidPairs.hic
+  - samplename: K562_copy
+    hic_file: /data/humangen_external/HiC/peakachu_test/GSE63525_K562_combined.hic
     resolution: 10000
-    hicexplorer_normalization: norm_range
-    hicexplorer_correction_method: KR # other method implemented as yet
-    hicexplorer_threshold_low: -2 # Leave -2 for first run
-    hicexplorer_threshold_high: 6 # Leave 6 for first run
+  - samplename: K562
+    hic_file: /data/humangen_external/HiC/peakachu_test/GSE63525_K562_combined.hic
+    resolution: 10000
 
-outdir: /data/humangen_external/test_area/varun/HiCExplorer_convert/
+# This is to make all the input samples the same
+hicexplorer_normalization: smallest # other options are norm_range and multiplicative
+# This is to remove biases - KR is the best choice and most widely accepted
+hicexplorer_correction_method: KR # other method implemented as yet
+# Leave the threshold options untouched
+hicexplorer_threshold_low: -2 # Leave -2 for first run
+hicexplorer_threshold_high: 6 # Leave 6 for first run
+outdir: /data/humangen_external/HiC/peakachu_test/cool_format/
