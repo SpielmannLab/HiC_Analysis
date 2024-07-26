@@ -9,15 +9,11 @@
 #set slurm file output nomenclature
 #SBATCH --output "slurm-%x-%j.out"
 
-# Load your necessary modules:
-module load nextflow/v22.04.1
-#
-# copy the scrits to $WORK directory - otherwise there is a jav aerror
-mkdir -p $WORK/hic_to_cool_nextflow_launchdir
-rsync -rc * $WORK/hic_to_cool_nextflow_launchdir/
-cd $WORK/hic_to_cool_nextflow_launchdir
-rm slurm*.out
+PATH=$WORK/.omics/anaconda3/bin:$PATH #add the anaconda installation path to the bash path
+source $WORK/.omics/anaconda3/etc/profile.d/conda.sh # some reason conda commands are not added by default
 
+conda activate nextflow
+#
 # if -resume option not present, then clean the nextflow
 if [[ $1 = -resume ]]; then
     echo "Resuming the previous nextflow run"
