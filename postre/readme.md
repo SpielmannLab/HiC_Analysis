@@ -1,7 +1,7 @@
 ## Installation
 Install using:
 
-    mamba env create -f env/postre.yaml
+    mamba env create -f envs/postre.yaml
 
 ## Launching Postre
 
