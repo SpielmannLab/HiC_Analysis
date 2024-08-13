@@ -1,0 +1,19 @@
+name: postre
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base>3.5.3
+  - r-shiny
+  - r-waiter
+  - r-shinybusy
+  - r-shinyjs
+  - r-shinywidgets
+  - r-dt
+  - r-plotrix
+  - r-shape
+  - r-diagram
+  - r-remotes
+  - r-pacman
+
