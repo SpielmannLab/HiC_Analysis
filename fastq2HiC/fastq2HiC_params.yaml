@@ -44,8 +44,6 @@ juicer_path:
   # HICCUPS and HICCUPSdiff works. Just be careful about the -k normalization option
   - name: juicer_2.20.00
     path: /data/humangen_external/HiC/installation/Juicer/juicer_tools.2.20.00.jar
-# A place to store a lot of temporary files.
-temporary_path: "/work/sreenivasan/hic_nextflow_workdir/" # This needs to be any directory that is accessible from all nodes. That is not $SCRATCH
 outdir: "/data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.14_fastq2HiC"
 
 ##### ------ For starting from allValidPairs file in case the process "allValidPairs_to_juicertools_hic" failed.
