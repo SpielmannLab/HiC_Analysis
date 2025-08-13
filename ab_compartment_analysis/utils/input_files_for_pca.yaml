@@ -1,0 +1,63 @@
+# condition1 used for marker shape
+# condition2 used for marker color
+# condition3 used for marker size
+samples:
+  - name: IDH1mut
+    condition1: IDH1
+    condition2: Mut_Average
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2025.08_IDH1_celline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/IDH1mut_query_ev_corrected.bed
+  - name: IDH1mutB1C30
+    condition1: IDH1
+    condition2: Mut_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2025.08_IDH1_celline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/IDH1mutB1C30_query_ev_corrected.bed
+  - name: IDH1mutB1C34
+    condition1: IDH1
+    condition2: Mut_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2025.08_IDH1_celline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/IDH1mutB1C34_query_ev_corrected.bed
+  - name: IDH1wt
+    condition1: IDH1
+    condition2: WT_Average
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2025.08_IDH1_celline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/IDH1wt_query_ev_corrected.bed
+  - name: IDH1wtB2C20
+    condition1: IDH1
+    condition2: WT_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2025.08_IDH1_celline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/IDH1wtB2C20_query_ev_corrected.bed
+  - name: IDH1wtCelllineSophie
+    condition1: IDH1
+    condition2: WT_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2025.08_IDH1_celline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/IDH1wtCelllineSophie_query_ev_corrected.bed
+  - name: DNMT3Amut55
+    condition1: DNMT3A
+    condition2: Mut_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2023.04.27_DNMT3A_clones/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/DNMT3Amut55_query_ev_corrected.bed
+  - name: DNMT3Amut71
+    condition1: DNMT3A
+    condition2: Mut_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2023.04.27_DNMT3A_clones/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/DNMT3Amut71_query_ev_corrected.bed
+  - name: DNMT3Amut
+    condition1: DNMT3A
+    condition2: Mut_Average
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2023.04.27_DNMT3A_clones/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/DNMT3Amut_query_ev_corrected.bed
+  - name: DNMT3Awt
+    condition1: DNMT3A
+    condition2: WT_Average
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2023.04.27_DNMT3A_clones/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/DNMT3Awt_query_ev_corrected.bed
+  - name: DNMT3Awtc13
+    condition1: DNMT3A
+    condition2: WT_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2023.04.27_DNMT3A_clones/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/DNMT3Awtc13_query_ev_corrected.bed
+  - name: DNMT3Awtc2
+    condition1: DNMT3A
+    condition2: WT_Replicate
+    ev_file: /Volumes/Humangenetik/Data/HiC/003_HiC_Sophie_Steinhaeuser/2023.04.27_DNMT3A_clones/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/DNMT3Awtc2_query_ev_corrected.bed
+
+condition2_breaks:
+  - WT_Replicate
+  - WT_Average
+  - Mut_Replicate
+  - Mut_Average
+condition2_shapes:
+  - 0
+  - 15
+  - 1
+  - 16
