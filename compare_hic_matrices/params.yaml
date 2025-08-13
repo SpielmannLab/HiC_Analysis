@@ -1,0 +1,86 @@
+# Provide input juicer files. Need to implement other types
+samples:
+  - samplename: IDH1wtB2C20
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2024.05_fastq2HiC/B2C20/juicer_1.19.02/B2C20.allValidPairs.hic
+  - samplename: IDH1wtCelllineSophie
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2024.05_fastq2HiC/CelllineSophie/juicer_1.19.02/CelllineSophie.allValidPairs.hic
+  - samplename: IDH1mutB1C30
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2024.05_fastq2HiC/B1C30/juicer_1.19.02/B1C30.allValidPairs.hic
+  - samplename: IDH1mutB1C34
+    hic_file: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2024.05_fastq2HiC/B1C34/juicer_1.19.02/B1C34.allValidPairs.hic
+
+# Which resoltion to extract from the juicer hic files. Finer the resolution, longer the processing time. 250kb finishes in about 20min. 1mb finishes in about 5 min.
+hic_resolution: 250kb
+
+# Downsample all samples to the smallest sample
+# This is needed when merging, else some samples will be weighted more
+do_downsampling: true
+# Use the sample name that has smallest no. of valid pairs. All the other samples will be downsampled accordingly
+# Look for "cis_interaction" values to figure this out *_allValidPairs.mergestat
+downsample_with: IDH1wtCelllineSophie
+
+# Merge samples before comparisons as needed:
+# Currently max 9 samples per merge_name
+merge_samples_before_comparison: true
+merges:
+  - merge_name: IDH1mut
+    samples:
+      - IDH1mutB1C30
+      - IDH1mutB1C34
+  - merge_name: IDH1wt
+    samples:
+      - IDH1wtCelllineSophie
+      - IDH1wtB2C20
+
+# Which normalizations to perform with FANC. The comparison values do depend on the normalizations.
+# Options seems to be KR, ICE, VC, VC-SQRT. ICE and KR very similar, with KR being more accurate and requiring more memory.
+# Note, KR might not always converge, especially when the matrix is sparse
+normalizations:
+  - KR
+  - ICE
+  - VC
+  - VC-SQRT
+
+# Define the comparisons to do using the "samplenames" defined above
+# You can also use the "merged" ones for comparisons, using the "merge_name"
+comparisons:
+  - id: IDH1mut_vs_IDH1wt
+    sample1: IDH1mut
+    sample2: IDH1wt
+  - id: IDH1mutB1C30_vs_IDH1wtB2C20
+    sample1: IDH1mutB1C30
+    sample2: IDH1wtB2C20
+  - id: IDH1mutB1C34_vs_IDH1wtB2C20
+    sample1: IDH1mutB1C34
+    sample2: IDH1wtB2C20
+  - id: IDH1mutB1C30_vs_IDH1wtCelllineSophie
+    sample1: IDH1mutB1C30
+    sample2: IDH1wtCelllineSophie
+  - id: IDH1mutB1C34_vs_IDH1wtCelllineSophie
+    sample1: IDH1mutB1C34
+    sample2: IDH1wtCelllineSophie
+  - id: IDH1mutB1C30_vs_IDH1mutB1C34
+    sample1: IDH1mutB1C30
+    sample2: IDH1mutB1C34
+  - id: IDH1wtB2C20_vs_IDH1wtCelllineSophie
+    sample1: IDH1wtB2C20
+    sample2: IDH1wtCelllineSophie
+
+# Plot some regions from the subtraction matrix
+do_plotting_of_comparison: true
+plotting_regions:
+  - 1:1-50mb
+  - 1:1-500mb
+  - 2:1-50mb
+  # - 2:1-500mb
+  - 3:1-50mb
+  # - 3:1-500mb
+  # - 4:1-50mb
+  # - 4:1-500mb
+  # - 21:1-500mb
+  # - X:1-500mb
+  - Y:1-50mb
+
+# Where to store the output
+# outdir: "/data/humangen_external/test_area/varun/2025.07_fanc_compare/nextflow_pipeline_out/"
+outdir: "/data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_cellline_comparisons/2025.07_compare_hic_matrices/"
