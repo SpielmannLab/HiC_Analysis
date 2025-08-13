@@ -1,0 +1,48 @@
+# Provide globs where the corresponding files are stored for all the samples
+hic_files_glob: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_cellline_comparisons/2025.07_ab_compartments/250kb/normalized_fanc_matrices/ICE/*fanc_ICE_normalized.hic
+domain_files_glob: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_cellline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/*_domains.bed
+ev_files_glob: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_cellline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/*_eigen_vectors.bed
+corr_mat_files_glob: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_cellline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/*_fanc.ab
+
+# Provide sample names and a prefix pattern that would uniquely identify the correct hic, domain and ev files from the paths above
+samples:
+  - samplename: IDH1mutB1C30
+    prefix: IDH1mutB1C30_
+  - samplename: IDH1mutB1C34
+    prefix: IDH1mutB1C34_
+  - samplename: IDH1mut
+    prefix: IDH1mut_
+  - samplename: IDH1wtB2C20
+    prefix: IDH1wtB2C20_
+  - samplename: IDH1wtCelllineSophie
+    prefix: IDH1wtCelllineSophie_
+  - samplename: IDH1wt
+    prefix: IDH1wt_
+
+ref_ev_sample: IDH1wt
+
+# To align the ref_ev_sample to a functional chip-seq data, provide the .bigWig or .bedGraph containing this data.
+# Note, peak-rich compartments will be assigned to "A" compartments.
+chip_data: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2025.07_ab_compartments/scripts_n_settings/input_file/wgEncodeBroadHistoneK562H3k4me3StdSig.bigWig
+macs3_cutoff: 20 # Use null to get an analysis performed on a range of cutoffs. This will help you choose a good cutoff. Check macs3 webpage for more info
+
+plot_correlation_matrix_and_ab_compartments: true
+plotting_regions:
+  - 1:1-50mb
+  - 1:1-500mb
+  - 2:1-50mb
+  - 3:1-50mb
+  - 4:1-50mb
+  - 5:1-50mb
+  - X:1-50mb
+
+# TO BE IMPLEMENTED Provide a CSV file containing which eigen vector to use for which sample, and chromosome
+eigenvectors_idx_sample_x_chromosome_matrix:
+
+# Do this
+# TODO
+plot_pca_of_ab_eigen_vector: true
+
+# Where to store the output
+# outdir: "/data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_cellline_comparisons/2025.07_ab_compartments/"
+outdir: "/data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_cellline_comparisons/2025.07_ab_compartments/250kb/compartments/ICE/after_ev_correction/"
