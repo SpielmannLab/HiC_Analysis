@@ -12,6 +12,10 @@ This pipeline contains two steps.
 
 Run the pipeline. There seems to be not much happening with or without nromalization when calling AB compartments.
 
+TODO
+Important notes:
+1. I am not removing the blacklisted regions of the genome. People do this to remove spurious signals. You may way to do this while doing PCA analysis using the AB eigenvectors.
+
 
 ## Utility scripts
 
