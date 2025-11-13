@@ -48,7 +48,7 @@ Several tools are availablc:
 
 ## Usage
 
-The nextflow script runs both TAD calling and differential analysis. Differential TAD analysis can only be done with two samples at a time. Support for replicates needs conversion to COOL format. #TOD
+The nextflow script runs both TAD calling and differential analysis. Differential TAD analysis can only be done with two samples at a time. Support for replicates needs conversion to COOL format. #TODO
 
 You can also use juicer_tools `validate` command to check which normalizations are present
 Fill out the information in the [parameters file](./call_tad_params.yaml) and submit the following script from OMICS headnode:
