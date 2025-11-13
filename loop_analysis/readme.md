@@ -29,4 +29,6 @@ First fill out the [call_loops_params.yaml](Steinhaeser_HiC_analysis/loop_analys
 5. Run diffpeakachu
    This is being done using new NextFlow script [here](/peakachu/nextflow_scripts/).
 
-6. Run HICCUPS
+6. Run HICCUPS - Not implemented yet
+
+7. Run Moustache - Not implemented yet
