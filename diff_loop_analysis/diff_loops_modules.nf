@@ -107,3 +107,24 @@ process annotate_loops {
         bedtools sort -i pe1_pe2_pe3_with_promoters.bed > promoters_in_loops!{loops}
         '''
 }
+
+/*
+process get_hiccups_scores_at_loops {
+    input:
+        tuple varname
+    output:
+        tuple varname, emit: label
+    shell:
+        '''
+        Here is a tried and tested command
+        srun -p shortterm -c 1 --mem 50GB --gres=gpu:1 --pty bash
+
+        #  -m higher of 1024 causes error
+        java -jar /data/humangen_external/HiC/installation/Juicer/juicer_tools_1.19.02.jar hiccups -m 500 -r 10000 -c 21 /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.10_fastq2HiC/juicer_1.19.02/DNMT3Amut55.allValidPairs.hic "./hiccups_mutant_unique/" /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2024.03_diff_loop_analysis_extraannotations/diffpeakachu/Mutant-WT.Mutant.unique.loops
+        java -jar /data/humangen_external/HiC/installation/Juicer/juicer_tools_1.19.02.jar hiccups -m 500 -r 10000 -c 21 /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.10_fastq2HiC/juicer_1.19.02/DNMT3Amut55.allValidPairs.hic "./hiccups_merged/" /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2024.03_diff_loop_analysis_extraannotations/diffpeakachu/Mutant-WT.merged.loops
+
+        # The output of these two commands are stored here:
+        /data/humangen_external/test_area/varun/2024.08.19_hiccups_to_get_loop_scores
+        '''
+}
+*/

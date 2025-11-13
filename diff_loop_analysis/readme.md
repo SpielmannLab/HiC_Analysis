@@ -51,4 +51,5 @@ Created peakachu env using installation instructions at their [github page](http
 
 5. The next step is to run Aggregate Peak Analysis
 
-   TODO
+   **TODO**
+   Hiccups to get raw count and the BL, V, H and Donut values at these diff and merged loops between the genotypes. Starting script is in the module file. And it works - but has not yet been implemented into the workflow. The example output is stored at: /data/humangen_external/test_area/varun/2024.08.19_hiccups_to_get_loop_scores
