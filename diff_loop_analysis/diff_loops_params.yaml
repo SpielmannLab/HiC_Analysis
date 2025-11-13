@@ -2,14 +2,18 @@
 # Unfiltered loops are the .loop files created by <peakachu score_genome>
 # Filtered loopsare the .loop files created by <pekachu pool>
 group1:
-  - samplename: B2C20
-    groupname: IDH1-WT
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/B2C20_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/B2C20_filtered.loops
-  - samplename: CelllineSophie
-    groupname: IDH1-WT
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/CelllineSophie_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/CelllineSophie_filtered.loops
+  - samplename: B1C30_10-IVO_5d
+    groupname: IDH1-Treated
+    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C30_10-IVO_5d_unfiltered.loops
+    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C30_10-IVO_5d_filtered.loops
+  - samplename: B1C34_10-IVO_5d
+    groupname: IDH1-Treated
+    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C34_10-IVO_5d_unfiltered.loops
+    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C34_10-IVO_5d_filtered.loops
+  - samplename: B2C17_10-IVO_5d
+    groupname: IDH1-Treated
+    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B2C17_10-IVO_5d_unfiltered.loops
+    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B2C17_10-IVO_5d_filtered.loops
 group2:
   - samplename: B1C30
     groupname: IDH1-Mutant-Untreated
@@ -22,85 +26,10 @@ group2:
 
 hic_resolution: 10000 # which hic-resolution to be used for loop calling
 
-# Annotate the pooled loops (i.e., not loop pixes, but the merged loops) and unique loops with gene names.
-# As of 24th Nov 2023, annotation of pooled loops not done. Only unique loops are annotated
-gene_annotation_bedfile: /data/humangen_external/reference/organisms/human/Genes_BED/genes_hg38.bedpe
-
-outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2024.01_diff_loop_analysis/IDH1-WT_vs_IDH1-Mutant-Untreated/
-
-# -------------------------------------------------
-# ---------- FOR ARCHIVAL PURPOSE ONLY ------------
-# -------------------------------------------------
-# DNMT3A_clones
-archive_group1:
-  - samplename: DNMT3Amut55
-    groupname: Mutant
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3Amut55_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3Amut55_filtered.loops
-  - samplename: DNMT3Amut71
-    groupname: Mutant
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3Amut71_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3Amut71_filtered.loops
-archive_group2:
-  - samplename: DNMT3AwtC13
-    groupname: WT
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3AwtC13_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3AwtC13_filtered.loops
-  - samplename: DNMT3AwtC2
-    groupname: WT
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3AwtC2_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2023.12_loop_analysis/DNMT3AwtC2_filtered.loops
-archive_outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/DNMT3A_clones/2024.01_diff_loop_analysis/
-# IDH1-mutant-treated. Comparision 1. IDH1-Treated vs IDH1-WT
-archive_group1:
-  - samplename: B1C30_10-IVO_5d
-    groupname: IDH1-Treated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C30_10-IVO_5d_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C30_10-IVO_5d_filtered.loops
-  - samplename: B1C34_10-IVO_5d
-    groupname: IDH1-Treated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C34_10-IVO_5d_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C34_10-IVO_5d_filtered.loops
-  - samplename: B2C17_10-IVO_5d
-    groupname: IDH1-Treated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B2C17_10-IVO_5d_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B2C17_10-IVO_5d_filtered.loops
-archive_group2:
-  - samplename: B2C20
-    groupname: IDH1-WT
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/B2C20_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/B2C20_filtered.loops
-  - samplename: CelllineSophie
-    groupname: IDH1-WT
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/CelllineSophie_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.07_IDH1_wt_reanalysis/2023.12_loop_analysis/CelllineSophie_filtered.loops
-archive_outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2024.01_diff_loop_analysis/IDH1-Treated_vs_IDH1-WT/
-# IDH1-mutant-treated. Comparision 2. IDH1-Treated vs IDH1-Mutant-Untreated
-archive_group1:
-  - samplename: B1C30_10-IVO_5d
-    groupname: IDH1-Treated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C30_10-IVO_5d_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C30_10-IVO_5d_filtered.loops
-  - samplename: B1C34_10-IVO_5d
-    groupname: IDH1-Treated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C34_10-IVO_5d_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B1C34_10-IVO_5d_filtered.loops
-  - samplename: B2C17_10-IVO_5d
-    groupname: IDH1-Treated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B2C17_10-IVO_5d_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2023.11_loop_analysis/B2C17_10-IVO_5d_filtered.loops
-archive_group2:
-  - samplename: B1C30
-    groupname: IDH1-Mutant-Untreated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.12_loop_analysis/B1C30_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.12_loop_analysis/B1C30_filtered.loops
-  - samplename: B1C34
-    groupname: IDH1-Mutant-Untreated
-    unfiltered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.12_loop_analysis/B1C34_unfiltered.loops
-    filtered_loops: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/2023.12.13_IDH1_mut_reanalysis/2023.12_loop_analysis/B1C34_filtered.loops
-archive_outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2024.01_diff_loop_analysis/IDH1-Treated_vs_IDH1-Mutant-Untreated/
-# IDH1-mutant-treated. Comparision 3. IDH1-WT vs IDH1-Mutant-Untreated
 # Annotate the pooled loops (i.e., not loop pixes, but the merged loops) and unique loops with gene and promoters.
 gene_annotation_bedfile: /data/humangen_external/reference/ucsc_table_browser/Homo_sapiens/GRCh38_GENCODEV44_knownGene_with_strandinfo.bed
 # Provide genome sizes file for using bedtools flank and slop to get promoters from genes.bed file
 genome_fa_fai_file: /data/humangen_external/reference/iGenomes/Homo_sapiens/UCSC/hg38/Sequence/WholeGenomeFasta/genome.fa.fai # The unzipped fasta file (containing the sequence)
+
+
+outdir: /data/humangen_external/HiC/steinhaeuser_hic/data_n_results/IDH1_clones_treated_stromal/2024.03_diff_loop_analysis_extraannotations/IDH1-Treated_vs_IDH1-Mutant-Untreated
